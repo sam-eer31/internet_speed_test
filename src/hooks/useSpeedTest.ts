@@ -269,7 +269,7 @@ export function useSpeedTest() {
         // Fetch the static random file. Vercel's CDN serves static files infinitely 
         // faster than Edge Functions can stream them, avoiding serverless bandwidth limits.
         const response = await fetch(
-          `/download-test.bin?t=${Date.now()}-${Math.random()}`,
+          `/download-test.bin`,
           { cache: "no-store" }
         );
 
