@@ -13,12 +13,13 @@ import {
   Legend,
 } from "recharts";
 
+import { SpeedTestResult } from "@/types";
+
 interface LiveChartProps {
-  downloadSamples: number[];
-  uploadSamples: number[];
+  history: SpeedTestResult[];
 }
 
-export function LiveChart({ downloadSamples, uploadSamples }: LiveChartProps) {
+export function LiveChart({ history }: LiveChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -43,16 +44,17 @@ export function LiveChart({ downloadSamples, uploadSamples }: LiveChartProps) {
     };
   }, []);
 
-  const maxLen = Math.max(downloadSamples.length, uploadSamples.length);
-  const data = Array.from({ length: maxLen }, (_, i) => ({
-    name: `Test ${i + 1}`,
-    download: downloadSamples[i]
-      ? Number(downloadSamples[i].toFixed(2))
-      : undefined,
-    upload: uploadSamples[i]
-      ? Number(uploadSamples[i].toFixed(2))
-      : undefined,
-  }));
+  const data = [...history]
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .slice(-15) // Show only the last 15 tests to keep the graph readable
+    .map((h) => {
+      const d = new Date(h.timestamp);
+      return {
+        name: `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`,
+        download: Number(h.download.toFixed(2)),
+        upload: Number(h.upload.toFixed(2)),
+      };
+    });
 
   if (data.length === 0) return null;
 

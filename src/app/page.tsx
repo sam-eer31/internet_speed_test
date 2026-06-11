@@ -273,10 +273,7 @@ export default function Home() {
                       rating={result.qualityRating}
                     />
                     <div className="lg:col-span-2">
-                      <LiveChart
-                        downloadSamples={progress.downloadSamples}
-                        uploadSamples={progress.uploadSamples}
-                      />
+                      <LiveChart history={history} />
                     </div>
                   </div>
 
