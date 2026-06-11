@@ -28,8 +28,8 @@ const SAMPLE_INTERVAL_MS = 200; // 200 ms
 const N_PING = 12;
 const N_PING_DISCARD = 2;
 
-/** Download chunk size per stream. Larger = less TTFB overhead per byte. */
-const DL_CHUNK_MB = 25;
+/** Download chunk size per stream. 10MB static file ensures CDN line-rate speeds. */
+const DL_CHUNK_MB = 10;
 
 /** Upload body size per parallel stream. 1MB chunks ensure smooth rolling completions. */
 const UL_CHUNK_MB = 1;
@@ -266,8 +266,10 @@ export function useSpeedTest() {
       let firstByteTime: number | null = null;
 
       try {
+        // Fetch the static random file. Vercel's CDN serves static files infinitely 
+        // faster than Edge Functions can stream them, avoiding serverless bandwidth limits.
         const response = await fetch(
-          `/api/download?size=${DL_CHUNK_MB}&t=${Date.now()}-${Math.random()}`,
+          `/download-test.bin?t=${Date.now()}-${Math.random()}`,
           { cache: "no-store" }
         );
 
