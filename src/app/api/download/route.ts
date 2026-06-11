@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
     headers: {
       "Content-Type": "application/octet-stream",
       "Content-Length": totalBytes.toString(),
-      // Hard no-cache
-      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+      // Hard no-cache + no-transform prevents Vercel/Cloudflare from applying gzip/Brotli
+      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0, no-transform",
       "Pragma": "no-cache",
       "Expires": "0",
       // Tell the client the exact payload size so it can track progress
