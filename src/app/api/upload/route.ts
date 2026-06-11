@@ -1,5 +1,6 @@
 // Route segment config — always dynamic, never cached
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export async function POST(request: Request) {
   // Stream the body instead of buffering via arrayBuffer().

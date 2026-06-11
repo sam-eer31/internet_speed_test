@@ -2,6 +2,7 @@ import { type NextRequest } from "next/server";
 
 // Route segment config — always dynamic, never cached
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 // Pre-generate a pseudo-random seed buffer that is NOT compressible.
 // We reuse this across calls to avoid per-request allocation overhead.
