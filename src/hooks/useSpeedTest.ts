@@ -145,9 +145,7 @@ export function useSpeedTest() {
     while (!abortRef.current && performance.now() - phaseStart < PING_DURATION_MS) {
       const t0 = performance.now();
       try {
-        const res = await fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`, {
-          cache: "no-store",
-        });
+        const res = await fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`);
         // CRITICAL: We must consume the body, otherwise the browser will drop the TCP 
         // socket instead of keeping it alive, forcing a new TLS handshake on every ping!
         await res.text();
@@ -436,11 +434,11 @@ export function useSpeedTest() {
         xhr.onerror = () => resolve();
         xhr.onabort = () => resolve();
 
-        // Cloudflare's __up endpoint accepts any POST payload and instantly discards it,
-        // avoiding Vercel's 4.5MB Serverless request body limits entirely.
+        // Cloudflare's __up endpoint accepts any POST payload and instantly discards it.
+        // We MUST NOT set custom headers like Cache-Control, otherwise it triggers a CORS 
+        // preflight (OPTIONS) which fails. POST requests are never cached anyway.
         xhr.open("POST", `https://speed.cloudflare.com/__up?t=${Date.now()}-${Math.random()}`);
-        xhr.setRequestHeader("Cache-Control", "no-store");
-        // We do not need a specific Content-Type for __up
+        xhr.setRequestHeader("Content-Type", "text/plain");
         xhr.send(body);
       });
     };
