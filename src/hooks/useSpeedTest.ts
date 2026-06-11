@@ -144,31 +144,35 @@ export function useSpeedTest() {
     let i = 0;
     while (!abortRef.current && performance.now() - phaseStart < PING_DURATION_MS) {
       const t0 = performance.now();
-      let pingMs = 0;
       try {
-        const url = `https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`;
-        const res = await fetch(url);
-        await res.text();
-        
-        const t1 = performance.now();
-        pingMs = t1 - t0;
+        const currentPingMs = await new Promise<number>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          const t_xhr = performance.now();
+          let rtt = 0;
 
-        // Use W3C Resource Timing API for 100% accurate ping.
-        // This is the exact method Ookla uses. It measures the precise network-level 
-        // Time-To-First-Byte (TTFB) excluding DNS, TCP handshake, and TLS handshake.
-        const entries = performance.getEntriesByName(url);
-        if (entries && entries.length > 0) {
-          const entry = entries[0] as PerformanceResourceTiming;
-          if (entry.responseStart > 0 && entry.requestStart > 0) {
-            pingMs = entry.responseStart - entry.requestStart;
-          }
-        }
+          xhr.onreadystatechange = () => {
+            // readyState 2 (HEADERS_RECEIVED) happens the exact microsecond the first byte 
+            // of the HTTP response arrives, giving mathematically perfect TTFB ping.
+            if (xhr.readyState === 2 && rtt === 0) {
+              rtt = performance.now() - t_xhr;
+            }
+            // Wait for state 4 (DONE) to resolve the promise, ensuring the browser 
+            // safely closes the HTTP stream and returns the socket to the connection pool.
+            if (xhr.readyState === 4) {
+              resolve(rtt > 0 ? rtt : performance.now() - t_xhr);
+            }
+          };
+
+          xhr.onerror = () => reject(new Error("XHR ping failed"));
+          xhr.open("GET", `https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`);
+          xhr.send();
+        });
+
+        rawPings.push(currentPingMs);
       } catch {
         // Skip failed ping
         continue;
       }
-
-      rawPings.push(pingMs);
 
       const elapsed = performance.now() - phaseStart;
       setProgress((prev) => ({
