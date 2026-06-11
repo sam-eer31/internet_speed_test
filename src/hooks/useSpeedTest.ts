@@ -141,32 +141,30 @@ export function useSpeedTest() {
     const PING_DURATION_MS = 5000;
     const phaseStart = performance.now();
 
+    performance.clearResourceTimings();
+
     let i = 0;
     while (!abortRef.current && performance.now() - phaseStart < PING_DURATION_MS) {
       const t0 = performance.now();
       try {
-        const currentPingMs = await new Promise<number>((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          const t_xhr = performance.now();
-          let rtt = 0;
+        const url = `https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`;
+        const res = await fetch(url, { cache: "no-store" });
+        await res.text(); // keep-alive the connection
+        const t1 = performance.now();
 
-          xhr.onreadystatechange = () => {
-            // readyState 2 (HEADERS_RECEIVED) happens the exact microsecond the first byte 
-            // of the HTTP response arrives, giving mathematically perfect TTFB ping.
-            if (xhr.readyState === 2 && rtt === 0) {
-              rtt = performance.now() - t_xhr;
-            }
-            // Wait for state 4 (DONE) to resolve the promise, ensuring the browser 
-            // safely closes the HTTP stream and returns the socket to the connection pool.
-            if (xhr.readyState === 4) {
-              resolve(rtt > 0 ? rtt : performance.now() - t_xhr);
-            }
-          };
+        let currentPingMs = t1 - t0;
 
-          xhr.onerror = () => reject(new Error("XHR ping failed"));
-          xhr.open("GET", `https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`);
-          xhr.send();
-        });
+        // The Official Cloudflare Speedtest Ping Logic:
+        // Use W3C Performance Resource Timing API to read the exact microsecond the 
+        // network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
+        const entries = performance.getEntriesByName(url);
+        if (entries && entries.length > 0) {
+          const entry = entries[0] as PerformanceResourceTiming;
+          // Only use if valid (Safari occasionally zeroes cross-origin metrics)
+          if (entry.responseStart > 0 && entry.requestStart > 0) {
+            currentPingMs = entry.responseStart - entry.requestStart;
+          }
+        }
 
         rawPings.push(currentPingMs);
       } catch {
