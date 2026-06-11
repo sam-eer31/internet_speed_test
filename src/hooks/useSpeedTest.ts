@@ -144,28 +144,27 @@ export function useSpeedTest() {
     let i = 0;
     while (!abortRef.current && performance.now() - phaseStart < PING_DURATION_MS) {
       const t0 = performance.now();
+      let pingMs = 0;
       try {
         const res = await fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`);
-        // CRITICAL: We must consume the body, otherwise the browser will drop the TCP 
-        // socket instead of keeping it alive, forcing a new TLS handshake on every ping!
         await res.text();
+        
+        const t1 = performance.now();
+        pingMs = t1 - t0;
 
+        // Cloudflare exposes the TRUE low-level TCP RTT in the Server-Timing header.
+        // By reading this, we completely bypass all Javascript 'fetch' overhead and get
+        // 100% accurate, hardware-level ping that matches Ookla and native apps.
+        const serverTiming = res.headers.get("server-timing");
+        if (serverTiming) {
+          const match = serverTiming.match(/rtt=(\d+)/);
+          if (match && match[1]) {
+            pingMs = parseInt(match[1], 10) / 1000;
+          }
+        }
       } catch {
         // Skip failed ping
         continue;
-      }
-      const t1 = performance.now();
-      let pingMs = t1 - t0;
-
-      // Cloudflare exposes the TRUE low-level TCP RTT in the Server-Timing header.
-      // By reading this, we completely bypass all Javascript 'fetch' overhead and get
-      // 100% accurate, hardware-level ping that matches Ookla and native apps.
-      const serverTiming = res.headers.get("server-timing");
-      if (serverTiming) {
-        const match = serverTiming.match(/rtt=(\d+)/);
-        if (match && match[1]) {
-          pingMs = parseInt(match[1], 10) / 1000;
-        }
       }
 
       rawPings.push(pingMs);
