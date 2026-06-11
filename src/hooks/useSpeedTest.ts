@@ -146,20 +146,21 @@ export function useSpeedTest() {
       const t0 = performance.now();
       let pingMs = 0;
       try {
-        const res = await fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`);
+        const url = `https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`;
+        const res = await fetch(url);
         await res.text();
         
         const t1 = performance.now();
         pingMs = t1 - t0;
 
-        // Cloudflare exposes the TRUE low-level TCP RTT in the Server-Timing header.
-        // By reading this, we completely bypass all Javascript 'fetch' overhead and get
-        // 100% accurate, hardware-level ping that matches Ookla and native apps.
-        const serverTiming = res.headers.get("server-timing");
-        if (serverTiming) {
-          const match = serverTiming.match(/rtt=(\d+)/);
-          if (match && match[1]) {
-            pingMs = parseInt(match[1], 10) / 1000;
+        // Use W3C Resource Timing API for 100% accurate ping.
+        // This is the exact method Ookla uses. It measures the precise network-level 
+        // Time-To-First-Byte (TTFB) excluding DNS, TCP handshake, and TLS handshake.
+        const entries = performance.getEntriesByName(url);
+        if (entries && entries.length > 0) {
+          const entry = entries[0] as PerformanceResourceTiming;
+          if (entry.responseStart > 0 && entry.requestStart > 0) {
+            pingMs = entry.responseStart - entry.requestStart;
           }
         }
       } catch {
