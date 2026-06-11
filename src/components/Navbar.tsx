@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Gauge, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Gauge, ExternalLink, Menu, X } from "lucide-react";
 import Link from "next/link";
 
 const navLinks = [
@@ -11,6 +12,8 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <motion.nav
       className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-xl border-b border-white/[0.06]"
@@ -29,6 +32,7 @@ export function Navbar() {
             </span>
           </Link>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <a
@@ -40,7 +44,7 @@ export function Navbar() {
               </a>
             ))}
             <a
-              href="https://github.com"
+              href="https://github.com/sam-eer31/internet_speed_test"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 text-sm text-white/60 hover:text-white rounded-lg hover:bg-white/[0.05] transition-all"
@@ -49,8 +53,52 @@ export function Navbar() {
               GitHub
             </a>
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/[0.05] transition-all"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Dropdown */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-t border-white/[0.06] bg-black/40 backdrop-blur-xl overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-1">
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-3 text-base text-white/60 hover:text-white rounded-lg hover:bg-white/[0.05] transition-all"
+                >
+                  {link.label}
+                </a>
+              ))}
+              <a
+                href="https://github.com/sam-eer31/internet_speed_test"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2 px-4 py-3 text-base text-white/60 hover:text-white rounded-lg hover:bg-white/[0.05] transition-all"
+              >
+                <ExternalLink className="w-4 h-4" />
+                GitHub
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }
