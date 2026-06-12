@@ -112,7 +112,9 @@ export default function Home() {
                 speed={
                   showResults
                     ? (unit === "byte" ? result.download / 8 : result.download)
-                    : (unit === "byte" ? progress.currentSpeed / 8 : progress.currentSpeed)
+                    : (progress.phase === "ping"
+                        ? progress.currentSpeed
+                        : (unit === "byte" ? progress.currentSpeed / 8 : progress.currentSpeed))
                 }
                 phase={progress.phase}
                 maxSpeed={progress.phase === "ping" ? 100 : (unit === "byte" ? 125 : 1000)}
@@ -152,7 +154,7 @@ export default function Home() {
                       <span className="text-white/40">
                         Ping:{" "}
                         <span className="text-purple-400 font-semibold tabular-nums">
-                          {(unit === "byte" ? (progress.ping ?? 0) / 8 : (progress.ping ?? 0)).toFixed(1)} ms
+                          {(progress.ping ?? 0).toFixed(1)} ms
                         </span>
                       </span>
                     )}
@@ -243,7 +245,7 @@ export default function Home() {
                     <MetricCard
                       icon={Activity}
                       label="Ping"
-                      value={unit === "byte" ? (result.ping ?? 0) / 8 : (result.ping ?? 0)}
+                      value={result.ping ?? 0}
                       unit="ms"
                       description="Network latency"
                       color="#8b5cf6"
@@ -271,7 +273,7 @@ export default function Home() {
                     <MetricCard
                       icon={Waves}
                       label="Jitter"
-                      value={unit === "byte" ? (result.jitter ?? 0) / 8 : (result.jitter ?? 0)}
+                      value={result.jitter ?? 0}
                       unit="ms"
                       description="Latency variation"
                       color="#f59e0b"
