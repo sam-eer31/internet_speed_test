@@ -23,6 +23,12 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/sam-eer31/internet_speed_test" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/%E2%9A%A1_Run_Speed_Test-Live_Demo-00b8f9?style=for-the-badge&logo=vercel&logoColor=white" alt="Run Speed Test" height="45" />
+  </a>
+</p>
+
 ---
 
 Flynk is a beautifully designed, highly interactive, and privacy-first internet speed test client. Leveraging edge testing nodes and modern web technologies, Flynk provides accurate real-time metrics with a state-of-the-art interface that feels responsive, interactive, and premium.
@@ -37,9 +43,6 @@ Run your speed test instantly: **[flynk-speedtest.vercel.app](https://github.com
 <p align="center">
   <img src="public/screenshot-dark.png" alt="Flynk Speed Test Interface" width="100%" />
 </p>
-
-> [!TIP]
-> *To display your actual application screenshot, capture a screenshot of the tool in action, name it `screenshot-dark.png`, and save it inside the `public/` directory of the project.*
 
 ---
 
