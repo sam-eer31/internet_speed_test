@@ -97,6 +97,7 @@ export function useSpeedTest() {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<SpeedTestResult | null>(null);
   const abortRef = useRef(false);
+  const lastCurrentSpeedRef = useRef<number>(0);
 
   // ── Warm-up ───────────────────────────────────────────────────────────────
   const warmUp = useCallback(async () => {
@@ -164,17 +165,24 @@ export function useSpeedTest() {
             speedSamples.push(instantMbps);
           }
 
+          // Apply Exponential Moving Average (EMA) for visual smoothing
+          const alpha = 0.25;
+          const smoothedSpeed = lastCurrentSpeedRef.current === 0
+            ? instantMbps
+            : alpha * instantMbps + (1 - alpha) * lastCurrentSpeedRef.current;
+          lastCurrentSpeedRef.current = smoothedSpeed;
+
           const elapsed = now - phaseStart;
           const totalDuration = WARMUP_MS + MEASURE_DURATION_MS;
 
           setProgress((prev) => ({
             ...prev,
             phase: "download",
-            currentSpeed: instantMbps,
+            currentSpeed: smoothedSpeed,
             download:
               speedSamples.length > 0
                 ? trimmedMean(speedSamples)
-                : instantMbps,
+                : smoothedSpeed,
             downloadSamples: [...speedSamples],
             progress: Math.min(100, (elapsed / totalDuration) * 100),
           }));
@@ -326,17 +334,24 @@ export function useSpeedTest() {
             speedSamples.push(instantMbps);
           }
 
+          // Apply Exponential Moving Average (EMA) for visual smoothing
+          const alpha = 0.25;
+          const smoothedSpeed = lastCurrentSpeedRef.current === 0
+            ? instantMbps
+            : alpha * instantMbps + (1 - alpha) * lastCurrentSpeedRef.current;
+          lastCurrentSpeedRef.current = smoothedSpeed;
+
           const elapsed = now - phaseStart;
           const totalDuration = WARMUP_MS + MEASURE_DURATION_MS;
 
           setProgress((prev) => ({
             ...prev,
             phase: "upload",
-            currentSpeed: instantMbps,
+            currentSpeed: smoothedSpeed,
             upload:
               speedSamples.length > 0
                 ? trimmedMean(speedSamples)
-                : instantMbps,
+                : smoothedSpeed,
             uploadSamples: [...speedSamples],
             progress: Math.min(100, (elapsed / totalDuration) * 100),
           }));
@@ -419,6 +434,7 @@ export function useSpeedTest() {
     abortRef.current = false;
     setIsRunning(true);
     setResult(null);
+    lastCurrentSpeedRef.current = 0;
     setProgress({ ...initialState, phase: "download" });
 
     try {
@@ -442,6 +458,7 @@ export function useSpeedTest() {
         currentSpeed: 0,
         speedResetKey: prev.speedResetKey + 1,
       }));
+      lastCurrentSpeedRef.current = 0;
 
       // 3. Upload phase
       setProgress((prev) => ({
