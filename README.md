@@ -15,9 +15,6 @@
   <a href="https://github.com/sam-eer31/internet_speed_test/stargazers">
     <img src="https://img.shields.io/github/stars/sam-eer31/internet_speed_test?style=flat-square&color=blue" alt="Stars" />
   </a>
-  <a href="https://github.com/sam-eer31/internet_speed_test/forks">
-    <img src="https://img.shields.io/github/forks/sam-eer31/internet_speed_test?style=flat-square&color=blue" alt="Forks" />
-  </a>
   <a href="https://vercel.com">
     <img src="https://img.shields.io/badge/deployed_on-Vercel-black?style=flat-square&logo=vercel" alt="Vercel" />
   </a>
