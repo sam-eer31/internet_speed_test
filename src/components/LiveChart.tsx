@@ -56,7 +56,7 @@ export function LiveChart({ history }: LiveChartProps) {
       };
     });
 
-  if (data.length === 0) return null;
+  if (data.length < 2) return null;
 
   return (
     <motion.div

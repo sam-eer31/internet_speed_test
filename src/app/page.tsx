@@ -284,13 +284,17 @@ export default function Home() {
 
                   {/* Quality Score + Live Chart */}
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <QualityScore
-                      score={result.qualityScore}
-                      rating={result.qualityRating}
-                    />
-                    <div className="lg:col-span-2">
-                      <LiveChart history={history} />
+                    <div className={history.length < 2 ? "lg:col-span-3 flex justify-center" : "lg:col-span-1"}>
+                      <QualityScore
+                        score={result.qualityScore}
+                        rating={result.qualityRating}
+                      />
                     </div>
+                    {history.length >= 2 && (
+                      <div className="lg:col-span-2">
+                        <LiveChart history={history} />
+                      </div>
+                    )}
                   </div>
 
                   {/* Share Card */}

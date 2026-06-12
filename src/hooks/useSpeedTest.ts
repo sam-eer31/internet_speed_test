@@ -118,7 +118,7 @@ export function useSpeedTest() {
         fetch(`/api/download?size=1&warmup=1&t=${Date.now()}`, {
           cache: "no-store",
         }),
-        fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}`, {
+        fetch(new URL(`/api/ping?warmup=1&t=${Date.now()}`, window.location.origin).toString(), {
           cache: "no-store",
         }).then((res) => res.text()),
       ]);
@@ -131,15 +131,15 @@ export function useSpeedTest() {
 
   // ── Ping ──────────────────────────────────────────────────────────────────
   /**
-   * Measures latency by sending rapid sequential GET requests to speed.cloudflare.com.
+   * Measures latency by sending rapid sequential GET requests to the local same-origin /api/ping.
    *
    * Correctness guarantees:
    * - Uses W3C Performance Resource Timing API to read the exact microsecond the 
    *   network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
-   * - Includes a microsecond retry loop to wait for the performance timeline update.
+   * - Resolves relative endpoint to absolute URL so browser timeline lookup succeeds.
    * - First N_PING_DISCARD samples discarded (TCP slow-start / JIT warm-up).
    * - Reports median latency (robust to occasional outliers from scheduling).
-   * - Jitter = mean absolute variation of consecutive samples (RFC 3550).
+   * - Jitter = mean absolute deviation of consecutive samples (RFC 3550).
    */
   const measurePing = useCallback(async (): Promise<{
     ping: number;
@@ -160,14 +160,13 @@ export function useSpeedTest() {
     ) {
       const t0 = performance.now();
       try {
-        const url = `https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`;
+        const url = new URL(`/api/ping?t=${Date.now()}-${i}`, window.location.origin).toString();
         const res = await fetch(url, { cache: "no-store" });
         await res.text(); // keep-alive the connection
         const t1 = performance.now();
 
         let currentPingMs = t1 - t0;
 
-        // The Official Cloudflare Speedtest Ping Logic:
         // Use W3C Performance Resource Timing API to read the exact microsecond the 
         // network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
         let entry: PerformanceResourceTiming | null = null;
