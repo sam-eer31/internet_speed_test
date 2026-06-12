@@ -24,6 +24,7 @@ import { HistoryTable } from "@/components/HistoryTable";
 import { ShareCard } from "@/components/ShareCard";
 import { Features } from "@/components/Features";
 import { Footer } from "@/components/Footer";
+import { ServerInfo } from "@/components/ServerInfo";
 import { useSpeedTest } from "@/hooks/useSpeedTest";
 import { SpeedTestResult } from "@/types";
 import { getHistory, clearHistory } from "@/lib/utils";
@@ -237,6 +238,7 @@ export default function Home() {
                   </motion.button>
                 )}
               </motion.div>
+              <ServerInfo />
             </motion.div>
           </div>
         </section>
