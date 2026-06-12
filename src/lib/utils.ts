@@ -1,18 +1,14 @@
 import { QualityRating, SpeedTestResult } from "@/types";
 
 export function calculateQualityScore(
-  ping: number,
   download: number,
-  upload: number,
-  jitter: number
+  upload: number
 ): number {
-  const pingScore = Math.max(0, Math.min(100, 100 - ping * 1.5));
-  const jitterScore = Math.max(0, Math.min(100, 100 - jitter * 5));
   const downloadScore = Math.min(100, (download / 100) * 100);
   const uploadScore = Math.min(100, (upload / 50) * 100);
 
   const score = Math.round(
-    pingScore * 0.2 + jitterScore * 0.1 + downloadScore * 0.45 + uploadScore * 0.25
+    downloadScore * 0.6 + uploadScore * 0.4
   );
   return Math.max(0, Math.min(100, score));
 }
@@ -42,9 +38,6 @@ export function formatMbps(mbps: number): string {
   return mbps.toFixed(2) + " Mbps";
 }
 
-export function formatMs(ms: number): string {
-  return ms.toFixed(1) + " ms";
-}
 
 export function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substring(2);

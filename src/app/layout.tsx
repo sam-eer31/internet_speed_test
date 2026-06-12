@@ -10,12 +10,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "SpeedTest - Modern Internet Speed Test",
   description:
-    "Test your internet speed with precision. Measure download, upload, ping, and jitter with our beautiful, real-time speed test powered by Next.js.",
+    "Test your internet speed with precision. Measure download and upload speeds with our beautiful, real-time speed test powered by Next.js.",
   keywords: [
     "speed test",
     "internet speed",
     "bandwidth test",
-    "ping test",
     "download speed",
     "upload speed",
     "network speed",

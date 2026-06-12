@@ -32,7 +32,7 @@ export function ShareCard({ result }: ShareCardProps) {
   }, []);
 
   const handleShare = useCallback(async () => {
-    const text = `My Speed Test Results:\nDownload: ${result.download.toFixed(2)} Mbps\nUpload: ${result.upload.toFixed(2)} Mbps\nPing: ${result.ping.toFixed(1)} ms\nJitter: ${result.jitter.toFixed(1)} ms\nQuality: ${result.qualityRating} (${result.qualityScore}/100)`;
+    const text = `My Speed Test Results:\nDownload: ${result.download.toFixed(2)} Mbps\nUpload: ${result.upload.toFixed(2)} Mbps\nQuality: ${result.qualityRating} (${result.qualityScore}/100)`;
 
     if (navigator.share) {
       try {
@@ -85,20 +85,7 @@ export function ShareCard({ result }: ShareCardProps) {
             </p>
             <p className="text-white/30 text-xs">Mbps</p>
           </div>
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-white/40 text-xs mb-1">Ping</p>
-            <p className="text-2xl font-bold text-purple-400">
-              {result.ping.toFixed(1)}
-            </p>
-            <p className="text-white/30 text-xs">ms</p>
-          </div>
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-white/40 text-xs mb-1">Jitter</p>
-            <p className="text-2xl font-bold text-amber-400">
-              {result.jitter.toFixed(1)}
-            </p>
-            <p className="text-white/30 text-xs">ms</p>
-          </div>
+
         </div>
 
         <div className="flex items-center justify-between bg-white/[0.04] rounded-xl p-4">

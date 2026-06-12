@@ -24,9 +24,7 @@ const WARMUP_MS = 2_000; // 2 seconds
 /** How often we compute and report instantaneous speed during a phase. */
 const SAMPLE_INTERVAL_MS = 200; // 200 ms
 
-/** Number of ping measurements (first N_PING_DISCARD are discarded). */
-const N_PING = 12;
-const N_PING_DISCARD = 2;
+
 
 /** Download chunk size per stream. 10MB static file ensures CDN line-rate speeds. */
 const DL_CHUNK_MB = 10;
@@ -58,12 +56,7 @@ function mean(arr: number[]): number {
   return arr.reduce((a, b) => a + b, 0) / arr.length;
 }
 
-function median(arr: number[]): number {
-  if (arr.length === 0) return 0;
-  const s = [...arr].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 === 0 ? (s[m - 1] + s[m]) / 2 : s[m];
-}
+
 
 /**
  * Weighted trimmed mean — discards the bottom `trimLow` fraction and
@@ -89,8 +82,6 @@ function trimmedMean(
 const initialState: TestProgress = {
   phase: "idle",
   currentSpeed: 0,
-  ping: 0,
-  jitter: 0,
   download: 0,
   upload: 0,
   downloadSamples: [],
@@ -110,94 +101,16 @@ export function useSpeedTest() {
   // ── Warm-up ───────────────────────────────────────────────────────────────
   const warmUp = useCallback(async () => {
     try {
-      // Small download + ping to establish TCP connections and warm caches
-      await Promise.all([
-        fetch(`/api/download?size=1&warmup=1&t=${Date.now()}`, {
-          cache: "no-store",
-        }),
-        fetch(`/api/ping?t=${Date.now()}`, { cache: "no-store" }),
-      ]);
+      // Small download to establish TCP connections and warm caches
+      await fetch(`/api/download?size=1&warmup=1&t=${Date.now()}`, {
+        cache: "no-store",
+      });
     } catch {
       // Non-critical — continue even if warm-up fails
     }
   }, []);
 
-  // ── Ping ──────────────────────────────────────────────────────────────────
-  /**
-   * Measures latency by sending rapid sequential GET requests to /api/ping.
-   *
-   * Correctness guarantees:
-   * - Timer starts immediately before fetch(), stops when response headers
-   *   arrive (not after body parse — body is ~30 bytes so negligible).
-   * - First N_PING_DISCARD samples discarded (TCP slow-start / JIT warm-up).
-   * - Reports median latency (robust to occasional outliers from scheduling).
-   * - Jitter = mean absolute deviation of consecutive samples (RFC 3550).
-   */
-  const measurePing = useCallback(async (): Promise<{
-    ping: number;
-    jitter: number;
-  }> => {
-    const rawPings: number[] = [];
-    const PING_DURATION_MS = 5000;
-    const phaseStart = performance.now();
 
-    performance.clearResourceTimings();
-
-    let i = 0;
-    while (!abortRef.current && performance.now() - phaseStart < PING_DURATION_MS) {
-      const t0 = performance.now();
-      try {
-        const url = `https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}-${i}`;
-        const res = await fetch(url, { cache: "no-store" });
-        await res.text(); // keep-alive the connection
-        const t1 = performance.now();
-
-        let currentPingMs = t1 - t0;
-
-        // The Official Cloudflare Speedtest Ping Logic:
-        // Use W3C Performance Resource Timing API to read the exact microsecond the 
-        // network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
-        const entries = performance.getEntriesByName(url);
-        if (entries && entries.length > 0) {
-          const entry = entries[0] as PerformanceResourceTiming;
-          // Only use if valid (Safari occasionally zeroes cross-origin metrics)
-          if (entry.responseStart > 0 && entry.requestStart > 0) {
-            currentPingMs = entry.responseStart - entry.requestStart;
-          }
-        }
-
-        rawPings.push(currentPingMs);
-      } catch {
-        // Skip failed ping
-        continue;
-      }
-
-      const elapsed = performance.now() - phaseStart;
-      setProgress((prev) => ({
-        ...prev,
-        phase: "ping",
-        currentSpeed: rawPings[rawPings.length - 1],
-        ping: rawPings[rawPings.length - 1],
-        progress: Math.min(100, (elapsed / PING_DURATION_MS) * 100),
-      }));
-
-      // Add a small delay so we don't spam the server too aggressively over 5 seconds
-      await new Promise(resolve => setTimeout(resolve, 50));
-      i++;
-    }
-
-    const stable = rawPings.slice(N_PING_DISCARD);
-    const pingResult = stable.length > 0 ? median(stable) : 0;
-
-    // Jitter: mean absolute deviation between consecutive samples (RFC 3550)
-    const jitterValues = stable
-      .slice(1)
-      .map((p, i) => Math.abs(p - stable[i]));
-    const jitterResult =
-      jitterValues.length > 0 ? mean(jitterValues) : 0;
-
-    return { ping: pingResult, jitter: jitterResult };
-  }, []);
 
   // ── Download ──────────────────────────────────────────────────────────────
   /**
@@ -506,31 +419,14 @@ export function useSpeedTest() {
     abortRef.current = false;
     setIsRunning(true);
     setResult(null);
-    setProgress({ ...initialState, phase: "ping" });
+    setProgress({ ...initialState, phase: "download" });
 
     try {
       // 1. Warm up — establish connections, prime server caches
       await warmUp();
       if (abortRef.current) return;
 
-      // 2. Ping phase
-      setProgress((prev) => ({
-        ...prev,
-        phase: "ping",
-        progress: 0,
-      }));
-      const { ping, jitter } = await measurePing();
-      if (abortRef.current) return;
-
-      setProgress((prev) => ({
-        ...prev,
-        ping,
-        jitter,
-        currentSpeed: 0,
-        speedResetKey: prev.speedResetKey + 1,
-      }));
-
-      // 3. Download phase
+      // 2. Download phase
       setProgress((prev) => ({
         ...prev,
         phase: "download",
@@ -547,7 +443,7 @@ export function useSpeedTest() {
         speedResetKey: prev.speedResetKey + 1,
       }));
 
-      // 4. Upload phase
+      // 3. Upload phase
       setProgress((prev) => ({
         ...prev,
         phase: "upload",
@@ -562,20 +458,16 @@ export function useSpeedTest() {
         upload: uploadResult.speed,
       }));
 
-      // 5. Finalize
+      // 4. Finalize
       const qualityScore = calculateQualityScore(
-        ping,
         downloadResult.speed,
-        uploadResult.speed,
-        jitter
+        uploadResult.speed
       );
       const qualityRating = getQualityRating(qualityScore);
 
       const finalResult: SpeedTestResult = {
         id: generateId(),
         timestamp: Date.now(),
-        ping,
-        jitter,
         download: downloadResult.speed,
         upload: uploadResult.speed,
         qualityScore,
@@ -598,7 +490,7 @@ export function useSpeedTest() {
     } finally {
       setIsRunning(false);
     }
-  }, [warmUp, measurePing, measureDownload, measureUpload]);
+  }, [warmUp, measureDownload, measureUpload]);
 
   const stopTest = useCallback(() => {
     abortRef.current = true;

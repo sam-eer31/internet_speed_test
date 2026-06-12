@@ -16,7 +16,7 @@ export function Footer() {
             </div>
             <p className="text-white/40 text-sm max-w-md leading-relaxed">
               A modern internet speed test built with cutting-edge technology.
-              Measure your download, upload, ping, and jitter with precision.
+              Measure your download and upload speeds with precision.
             </p>
             <p className="text-white/25 text-xs mt-4">
               Built with Next.js and deployed on Vercel
