@@ -10,11 +10,12 @@ interface ProgressStepsProps {
 }
 
 const phases: { key: TestPhase; label: string }[] = [
+  { key: "ping", label: "Ping" },
   { key: "download", label: "Download" },
   { key: "upload", label: "Upload" },
 ];
 
-const phaseOrder = ["idle", "download", "upload", "complete"];
+const phaseOrder = ["idle", "ping", "download", "upload", "complete"];
 
 export function ProgressSteps({ phase, progress }: ProgressStepsProps) {
   const currentIdx = phaseOrder.indexOf(phase);

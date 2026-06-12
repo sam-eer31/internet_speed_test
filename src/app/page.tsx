@@ -7,6 +7,8 @@ import {
   Square,
   ArrowDownCircle,
   ArrowUpCircle,
+  Activity,
+  Waves,
 } from "lucide-react";
 
 import { Navbar } from "@/components/Navbar";
@@ -113,7 +115,7 @@ export default function Home() {
                     : (unit === "byte" ? progress.currentSpeed / 8 : progress.currentSpeed)
                 }
                 phase={progress.phase}
-                maxSpeed={unit === "byte" ? 125 : 1000}
+                maxSpeed={progress.phase === "ping" ? 100 : (unit === "byte" ? 125 : 1000)}
                 size={380}
                 instant={!!showResults}
                 resetKey={progress.speedResetKey}
@@ -146,7 +148,14 @@ export default function Home() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                   >
-
+                    {progress.ping > 0 && (
+                      <span className="text-white/40">
+                        Ping:{" "}
+                        <span className="text-purple-400 font-semibold tabular-nums">
+                          {progress.ping.toFixed(1)} ms
+                        </span>
+                      </span>
+                    )}
                     {progress.download > 0 && (
                       <span className="text-white/40">
                         Download:{" "}
@@ -230,7 +239,17 @@ export default function Home() {
                   transition={{ duration: 0.5 }}
                 >
                   {/* Metric Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <MetricCard
+                      icon={Activity}
+                      label="Ping"
+                      value={result.ping}
+                      unit="ms"
+                      description="Network latency"
+                      color="#8b5cf6"
+                      delay={0}
+                      decimals={1}
+                    />
                     <MetricCard
                       icon={ArrowDownCircle}
                       label="Download"
@@ -238,7 +257,7 @@ export default function Home() {
                       unit={unit === "byte" ? "MB/s" : "Mbps"}
                       description="Download speed"
                       color="#3b82f6"
-                      delay={0}
+                      delay={0.1}
                     />
                     <MetricCard
                       icon={ArrowUpCircle}
@@ -247,7 +266,17 @@ export default function Home() {
                       unit={unit === "byte" ? "MB/s" : "Mbps"}
                       description="Upload speed"
                       color="#10b981"
-                      delay={0.1}
+                      delay={0.2}
+                    />
+                    <MetricCard
+                      icon={Waves}
+                      label="Jitter"
+                      value={result.jitter}
+                      unit="ms"
+                      description="Latency variation"
+                      color="#f59e0b"
+                      delay={0.3}
+                      decimals={1}
                     />
                   </div>
 

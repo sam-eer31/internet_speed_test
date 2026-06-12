@@ -26,6 +26,7 @@ const TOTAL_DEG  = END_DEG - START_DEG; // 260°
 // ─── Phase helpers ────────────────────────────────────────────────────────────
 function getColors(phase: TestPhase): [string, string, string] {
   switch (phase) {
+    case "ping":     return ["#a78bfa", "#8b5cf6", "#7c3aed"];
     case "download": return ["#60a5fa", "#3b82f6", "#2563eb"];
     case "upload":   return ["#34d399", "#10b981", "#059669"];
     case "complete": return ["#22d3ee", "#06b6d4", "#0891b2"];
@@ -35,6 +36,7 @@ function getColors(phase: TestPhase): [string, string, string] {
 
 function getLabel(phase: TestPhase) {
   switch (phase) {
+    case "ping":     return { icon: "◉", text: "Latency" };
     case "download": return { icon: "↓", text: "Download" };
     case "upload":   return { icon: "↑", text: "Upload" };
     case "complete": return { icon: "✓", text: "Complete" };
@@ -321,7 +323,7 @@ export function SpeedGauge({
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
         <defs>
           {/* One gradient per phase so colour transitions are clean */}
-          {(["idle","download","upload","complete"] as TestPhase[]).map(p => {
+          {(["idle","ping","download","upload","complete"] as TestPhase[]).map(p => {
             const [pc1,,pc3] = getColors(p);
             return (
               <linearGradient key={p} id={`grad-${p}`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -514,7 +516,7 @@ export function SpeedGauge({
         </div>
 
         <span className="text-white/35 text-xs font-medium tracking-wider">
-          {unit === "byte" ? "MB/s" : "Mbps"}
+          {phase === "ping" ? "ms" : (unit === "byte" ? "MB/s" : "Mbps")}
         </span>
       </div>
     </div>
