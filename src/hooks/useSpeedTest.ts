@@ -108,6 +108,8 @@ export function useSpeedTest() {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<SpeedTestResult | null>(null);
   const abortRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const activeXhrsRef = useRef<Set<XMLHttpRequest>>(new Set());
   const lastCurrentSpeedRef = useRef<number>(0);
 
   // ── Warm-up ───────────────────────────────────────────────────────────────
@@ -117,13 +119,16 @@ export function useSpeedTest() {
       await Promise.all([
         fetch(`/api/download?size=1&warmup=1&t=${Date.now()}`, {
           cache: "no-store",
+          signal: abortControllerRef.current?.signal,
         }),
         fetch("https://www.google.com/generate_204", {
           mode: "no-cors",
           cache: "no-store",
+          signal: abortControllerRef.current?.signal,
         }),
         fetch("https://speed.cloudflare.com/__down?bytes=0", {
           cache: "no-store",
+          signal: abortControllerRef.current?.signal,
         }).then((res) => res.text()),
       ]);
     } catch {
@@ -166,7 +171,7 @@ export function useSpeedTest() {
       const t0 = performance.now();
       try {
         const url = `https://www.google.com/generate_204?t=${Date.now()}-${i}`;
-        await fetch(url, { mode: "no-cors", cache: "no-store" });
+        await fetch(url, { mode: "no-cors", cache: "no-store", signal: abortControllerRef.current?.signal });
         const t1 = performance.now();
 
         let currentPingMs = t1 - t0;
@@ -298,7 +303,7 @@ export function useSpeedTest() {
         const bytesToFetch = DL_CHUNK_MB * 1024 * 1024;
         const response = await fetch(
           `https://speed.cloudflare.com/__down?bytes=${bytesToFetch}&t=${Date.now()}-${Math.random()}`,
-          { cache: "no-store" }
+          { cache: "no-store", signal: abortControllerRef.current?.signal }
         );
 
         if (!response.ok || !response.body) return;
@@ -460,14 +465,22 @@ export function useSpeedTest() {
 
         const body = uploadBuffer.slice(0);
         const xhr = new XMLHttpRequest();
+        activeXhrsRef.current.add(xhr);
 
         xhr.onload = () => {
+          activeXhrsRef.current.delete(xhr);
           completions.push({ bytes: body.byteLength, ts: performance.now() });
           resolve();
         };
 
-        xhr.onerror = () => resolve();
-        xhr.onabort = () => resolve();
+        xhr.onerror = () => {
+          activeXhrsRef.current.delete(xhr);
+          resolve();
+        };
+        xhr.onabort = () => {
+          activeXhrsRef.current.delete(xhr);
+          resolve();
+        };
 
         // Cloudflare's __up endpoint accepts any POST payload and instantly discards it.
         // We MUST NOT set custom headers like Cache-Control, otherwise it triggers a CORS 
@@ -524,6 +537,8 @@ export function useSpeedTest() {
   // ── Orchestrator ──────────────────────────────────────────────────────────
   const startTest = useCallback(async () => {
     abortRef.current = false;
+    abortControllerRef.current = new AbortController();
+    activeXhrsRef.current.clear();
     setIsRunning(true);
     setResult(null);
     lastCurrentSpeedRef.current = 0;
@@ -626,8 +641,17 @@ export function useSpeedTest() {
 
   const stopTest = useCallback(() => {
     abortRef.current = true;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    activeXhrsRef.current.forEach(xhr => xhr.abort());
+    activeXhrsRef.current.clear();
+    
     setIsRunning(false);
-    setProgress(initialState);
+    setProgress(prev => ({
+      ...initialState,
+      speedResetKey: prev.speedResetKey + 1
+    }));
   }, []);
 
   return {
