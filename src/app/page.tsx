@@ -203,21 +203,21 @@ export default function Home() {
                 {!isRunning ? (
                   <motion.button
                     onClick={startTest}
-                    className="group relative px-8 py-3.5 sm:px-10 sm:py-4 rounded-full font-semibold text-white overflow-hidden transition-all duration-300 shadow-[0_4px_20px_rgba(99,102,241,0.4)] hover:shadow-[0_8px_30px_rgba(99,102,241,0.6)]"
+                    className="group relative px-8 py-3.5 sm:px-10 sm:py-4 rounded-full font-semibold text-white overflow-hidden transition-all duration-300 shadow-[0_4px_20px_rgba(0,184,249,0.3)] hover:shadow-[0_8px_30px_rgba(0,69,224,0.4)]"
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    aria-label="Start speed test"
+                    aria-label="Initiate Diagnostics"
                   >
                     {/* Primary Background */}
-                    <div className="absolute inset-0 bg-indigo-600 transition-colors duration-300 group-hover:bg-indigo-500" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#00b8f9] to-[#0045e0] transition-opacity duration-300 group-hover:opacity-90" />
                     
                     {/* Shimmer sweep effect */}
-                    <div className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
+                    <div className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
 
                     {/* Content */}
                     <span className="relative z-20 flex items-center justify-center gap-2.5 text-sm sm:text-base tracking-wide">
                       <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
-                      {showResults ? "Test Again" : "Start Speed Test"}
+                      {showResults ? "Rerun Diagnostics" : "Initiate Diagnostics"}
                     </span>
                   </motion.button>
                 ) : (
@@ -228,7 +228,7 @@ export default function Home() {
                     whileTap={{ scale: 0.98 }}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    aria-label="Stop speed test"
+                    aria-label="Abort Diagnostics"
                   >
                     {/* Primary Background */}
                     <div className="absolute inset-0 bg-red-600 transition-colors duration-300 group-hover:bg-red-500" />
@@ -239,7 +239,7 @@ export default function Home() {
                     {/* Content */}
                     <span className="relative z-20 flex items-center justify-center gap-2.5 text-sm sm:text-base tracking-wide">
                       <Square className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
-                      Stop Test
+                      Abort Diagnostics
                     </span>
                   </motion.button>
                 )}
