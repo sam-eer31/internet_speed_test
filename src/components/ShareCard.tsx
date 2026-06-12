@@ -9,10 +9,15 @@ import { getQualityColor } from "@/lib/utils";
 
 interface ShareCardProps {
   result: SpeedTestResult;
+  unit: "bit" | "byte";
 }
 
-export function ShareCard({ result }: ShareCardProps) {
+export function ShareCard({ result, unit }: ShareCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const downloadVal = unit === "byte" ? result.download / 8 : result.download;
+  const uploadVal = unit === "byte" ? result.upload / 8 : result.upload;
+  const unitStr = unit === "byte" ? "MB/s" : "Mbps";
 
   const handleDownload = useCallback(async () => {
     if (!cardRef.current) return;
@@ -32,7 +37,7 @@ export function ShareCard({ result }: ShareCardProps) {
   }, []);
 
   const handleShare = useCallback(async () => {
-    const text = `My Speed Test Results:\nDownload: ${result.download.toFixed(2)} Mbps\nUpload: ${result.upload.toFixed(2)} Mbps\nQuality: ${result.qualityRating} (${result.qualityScore}/100)`;
+    const text = `My Speed Test Results:\nDownload: ${downloadVal.toFixed(2)} ${unitStr}\nUpload: ${uploadVal.toFixed(2)} ${unitStr}\nQuality: ${result.qualityRating} (${result.qualityScore}/100)`;
 
     if (navigator.share) {
       try {
@@ -43,7 +48,7 @@ export function ShareCard({ result }: ShareCardProps) {
     } else {
       await navigator.clipboard.writeText(text);
     }
-  }, [result]);
+  }, [result, downloadVal, uploadVal, unitStr]);
 
   const color = getQualityColor(result.qualityRating);
 
@@ -74,16 +79,16 @@ export function ShareCard({ result }: ShareCardProps) {
           <div className="bg-white/[0.04] rounded-xl p-4">
             <p className="text-white/40 text-xs mb-1">Download</p>
             <p className="text-2xl font-bold text-blue-400">
-              {result.download.toFixed(2)}
+              {downloadVal.toFixed(2)}
             </p>
-            <p className="text-white/30 text-xs">Mbps</p>
+            <p className="text-white/30 text-xs">{unitStr}</p>
           </div>
           <div className="bg-white/[0.04] rounded-xl p-4">
             <p className="text-white/40 text-xs mb-1">Upload</p>
             <p className="text-2xl font-bold text-emerald-400">
-              {result.upload.toFixed(2)}
+              {uploadVal.toFixed(2)}
             </p>
-            <p className="text-white/30 text-xs">Mbps</p>
+            <p className="text-white/30 text-xs">{unitStr}</p>
           </div>
 
         </div>

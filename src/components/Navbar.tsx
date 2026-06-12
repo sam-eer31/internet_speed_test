@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gauge, ExternalLink, Menu, X } from "lucide-react";
+import { Gauge, ExternalLink, Menu, X, Settings } from "lucide-react";
 import Link from "next/link";
+
+interface NavbarProps {
+  unit: "bit" | "byte";
+  onUnitChange: (unit: "bit" | "byte") => void;
+}
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -11,8 +16,9 @@ const navLinks = [
   { label: "About", href: "#about" },
 ];
 
-export function Navbar() {
+export function Navbar({ unit, onUnitChange }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <motion.nav
@@ -52,6 +58,70 @@ export function Navbar() {
               <ExternalLink className="w-4 h-4" />
               GitHub
             </a>
+
+            {/* Settings Dropdown Button */}
+            <div className="relative ml-2">
+              <button
+                onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                className={`p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.05] transition-all ${
+                  isSettingsOpen ? "bg-white/[0.05] text-white" : ""
+                }`}
+                aria-label="Settings"
+              >
+                <Settings className={`w-4.5 h-4.5 transition-transform duration-300 ${isSettingsOpen ? "rotate-45" : ""}`} />
+              </button>
+              
+              <AnimatePresence>
+                {isSettingsOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsSettingsOpen(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-52 bg-[#0a0a20]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-50"
+                    >
+                      <p className="text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                        Settings
+                      </p>
+                      <div>
+                        <p className="text-xs font-semibold text-white/75 mb-2">
+                          Unit System
+                        </p>
+                        <div className="flex bg-white/[0.04] border border-white/[0.08] rounded-lg p-0.5 relative">
+                          <button
+                            onClick={() => onUnitChange("byte")}
+                            className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
+                              unit === "byte" ? "text-white" : "text-white/40 hover:text-white/60"
+                            }`}
+                          >
+                            Byte (MB/s)
+                          </button>
+                          <button
+                            onClick={() => onUnitChange("bit")}
+                            className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
+                              unit === "bit" ? "text-white" : "text-white/40 hover:text-white/60"
+                            }`}
+                          >
+                            Bit (Mbps)
+                          </button>
+                          <motion.div
+                            className="absolute top-0.5 bottom-0.5 bg-indigo-500 rounded-[6px]"
+                            layoutId="activeUnitDesktop"
+                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                            style={{
+                              width: "calc(50% - 2px)",
+                              left: unit === "byte" ? "2px" : "calc(50%)",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -95,6 +165,45 @@ export function Navbar() {
                 <ExternalLink className="w-4 h-4" />
                 GitHub
               </a>
+
+              {/* Mobile settings section */}
+              <div className="border-t border-white/[0.06] pt-4 mt-3 pb-2">
+                <p className="px-4 text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                  Settings
+                </p>
+                <div className="px-4">
+                  <p className="text-xs font-semibold text-white/75 mb-2">
+                    Unit System
+                  </p>
+                  <div className="flex bg-white/[0.04] border border-white/[0.08] rounded-lg p-0.5 relative">
+                    <button
+                      onClick={() => onUnitChange("byte")}
+                      className={`flex-1 text-center py-2 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
+                        unit === "byte" ? "text-white" : "text-white/40"
+                      }`}
+                    >
+                      Byte (MB/s)
+                    </button>
+                    <button
+                      onClick={() => onUnitChange("bit")}
+                      className={`flex-1 text-center py-2 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
+                        unit === "bit" ? "text-white" : "text-white/40"
+                      }`}
+                    >
+                      Bit (Mbps)
+                    </button>
+                    <motion.div
+                      className="absolute top-0.5 bottom-0.5 bg-indigo-500 rounded-[6px]"
+                      layoutId="activeUnitMobile"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      style={{
+                        width: "calc(50% - 2px)",
+                        left: unit === "byte" ? "2px" : "calc(50%)",
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}

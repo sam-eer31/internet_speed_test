@@ -29,6 +29,19 @@ import { getHistory, clearHistory } from "@/lib/utils";
 export default function Home() {
   const { progress, isRunning, result, startTest, stopTest } = useSpeedTest();
   const [history, setHistory] = useState<SpeedTestResult[]>([]);
+  const [unit, setUnit] = useState<"bit" | "byte">("byte");
+
+  useEffect(() => {
+    const savedUnit = localStorage.getItem("speedtest-unit");
+    if (savedUnit === "bit" || savedUnit === "byte") {
+      setUnit(savedUnit);
+    }
+  }, []);
+
+  const handleUnitChange = (newUnit: "bit" | "byte") => {
+    setUnit(newUnit);
+    localStorage.setItem("speedtest-unit", newUnit);
+  };
 
   useEffect(() => {
     setHistory(getHistory());
@@ -65,7 +78,7 @@ export default function Home() {
       </div>
 
       <Particles />
-      <Navbar />
+      <Navbar unit={unit} onUnitChange={handleUnitChange} />
 
       <main className="relative z-10 flex-1">
         {/* Hero Section — Gauge & Controls */}
@@ -96,14 +109,15 @@ export default function Home() {
               <SpeedGauge
                 speed={
                   showResults
-                    ? result.download
-                    : progress.currentSpeed
+                    ? (unit === "byte" ? result.download / 8 : result.download)
+                    : (unit === "byte" ? progress.currentSpeed / 8 : progress.currentSpeed)
                 }
                 phase={progress.phase}
-                maxSpeed={1000}
+                maxSpeed={unit === "byte" ? 125 : 1000}
                 size={380}
                 instant={!!showResults}
                 resetKey={progress.speedResetKey}
+                unit={unit}
               />
 
               {/* Progress Steps */}
@@ -138,11 +152,11 @@ export default function Home() {
                         Download:{" "}
                         <span className="text-blue-400 tabular-nums">
                           {progress.phase === "download" ? (
-                            <SmoothNumber value={progress.currentSpeed} />
+                            <SmoothNumber value={unit === "byte" ? progress.currentSpeed / 8 : progress.currentSpeed} />
                           ) : (
-                            progress.download.toFixed(2)
+                            (unit === "byte" ? progress.download / 8 : progress.download).toFixed(2)
                           )}{" "}
-                          Mbps
+                          {unit === "byte" ? "MB/s" : "Mbps"}
                         </span>
                       </span>
                     )}
@@ -151,11 +165,11 @@ export default function Home() {
                         Upload:{" "}
                         <span className="text-emerald-400 tabular-nums">
                           {progress.phase === "upload" ? (
-                            <SmoothNumber value={progress.currentSpeed} />
+                            <SmoothNumber value={unit === "byte" ? progress.currentSpeed / 8 : progress.currentSpeed} />
                           ) : (
-                            progress.upload.toFixed(2)
+                            (unit === "byte" ? progress.upload / 8 : progress.upload).toFixed(2)
                           )}{" "}
-                          Mbps
+                          {unit === "byte" ? "MB/s" : "Mbps"}
                         </span>
                       </span>
                     )}
@@ -220,8 +234,8 @@ export default function Home() {
                     <MetricCard
                       icon={ArrowDownCircle}
                       label="Download"
-                      value={result.download}
-                      unit="Mbps"
+                      value={unit === "byte" ? result.download / 8 : result.download}
+                      unit={unit === "byte" ? "MB/s" : "Mbps"}
                       description="Download speed"
                       color="#3b82f6"
                       delay={0}
@@ -229,8 +243,8 @@ export default function Home() {
                     <MetricCard
                       icon={ArrowUpCircle}
                       label="Upload"
-                      value={result.upload}
-                      unit="Mbps"
+                      value={unit === "byte" ? result.upload / 8 : result.upload}
+                      unit={unit === "byte" ? "MB/s" : "Mbps"}
                       description="Upload speed"
                       color="#10b981"
                       delay={0.1}
@@ -249,7 +263,7 @@ export default function Home() {
                   </div>
 
                   {/* Share Card */}
-                  <ShareCard result={result} />
+                  <ShareCard result={result} unit={unit} />
 
                   {/* Device Info */}
                   <DeviceInfo />
@@ -280,7 +294,7 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <HistoryTable history={history} onClear={handleClearHistory} />
+            <HistoryTable history={history} onClear={handleClearHistory} unit={unit} />
           </div>
         </section>
       </main>

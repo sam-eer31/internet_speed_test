@@ -8,9 +8,10 @@ import { clearHistory, getQualityColor } from "@/lib/utils";
 interface HistoryTableProps {
   history: SpeedTestResult[];
   onClear: () => void;
+  unit: "bit" | "byte";
 }
 
-export function HistoryTable({ history, onClear }: HistoryTableProps) {
+export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
   if (history.length === 0) {
     return (
       <motion.div
@@ -27,11 +28,15 @@ export function HistoryTable({ history, onClear }: HistoryTableProps) {
   }
 
   const handleExport = () => {
+    const unitStr = unit === "byte" ? "MB/s" : "Mbps";
     const csv = [
-      "Date,Download (Mbps),Upload (Mbps),Score,Rating",
+      `Date,Download (${unitStr}),Upload (${unitStr}),Score,Rating`,
       ...history.map(
-        (r) =>
-          `${new Date(r.timestamp).toLocaleString()},${r.download.toFixed(2)},${r.upload.toFixed(2)},${r.qualityScore},${r.qualityRating}`
+        (r) => {
+          const dl = unit === "byte" ? r.download / 8 : r.download;
+          const ul = unit === "byte" ? r.upload / 8 : r.upload;
+          return `${new Date(r.timestamp).toLocaleString()},${dl.toFixed(2)},${ul.toFixed(2)},${r.qualityScore},${r.qualityRating}`;
+        }
       ),
     ].join("\n");
 
@@ -82,10 +87,10 @@ export function HistoryTable({ history, onClear }: HistoryTableProps) {
             <tr className="border-b border-white/[0.06]">
               <th className="text-left text-xs text-white/40 font-medium pb-3 pr-4">Date</th>
               <th className="text-right text-xs text-white/40 font-medium pb-3 px-3">
-                <ArrowDownCircle className="w-3.5 h-3.5 inline" /> Down
+                <ArrowDownCircle className="w-3.5 h-3.5 inline" /> Down ({unit === "byte" ? "MB/s" : "Mbps"})
               </th>
               <th className="text-right text-xs text-white/40 font-medium pb-3 px-3">
-                <ArrowUpCircle className="w-3.5 h-3.5 inline" /> Up
+                <ArrowUpCircle className="w-3.5 h-3.5 inline" /> Up ({unit === "byte" ? "MB/s" : "Mbps"})
               </th>
               <th className="text-right text-xs text-white/40 font-medium pb-3 px-3">Score</th>
             </tr>
@@ -107,10 +112,10 @@ export function HistoryTable({ history, onClear }: HistoryTableProps) {
                 </td>
 
                 <td className="py-3 px-3 text-right text-sm text-blue-400 tabular-nums">
-                  {result.download.toFixed(2)}
+                  {(unit === "byte" ? result.download / 8 : result.download).toFixed(2)}
                 </td>
                 <td className="py-3 px-3 text-right text-sm text-emerald-400 tabular-nums">
-                  {result.upload.toFixed(2)}
+                  {(unit === "byte" ? result.upload / 8 : result.upload).toFixed(2)}
                 </td>
                 <td className="py-3 px-3 text-right">
                   <span

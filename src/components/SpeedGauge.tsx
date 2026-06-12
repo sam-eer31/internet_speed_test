@@ -10,6 +10,7 @@ interface SpeedGaugeProps {
   size?: number;
   instant?: boolean;
   resetKey?: number;
+  unit: "bit" | "byte";
 }
 
 // ─── Spring constants (critically damped) ────────────────────────────────────
@@ -94,6 +95,7 @@ export function SpeedGauge({
   size    = 380,
   instant = false,
   resetKey = 0,
+  unit,
 }: SpeedGaugeProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
@@ -512,7 +514,7 @@ export function SpeedGauge({
         </div>
 
         <span className="text-white/35 text-xs font-medium tracking-wider">
-          Mbps
+          {unit === "byte" ? "MB/s" : "Mbps"}
         </span>
       </div>
     </div>
