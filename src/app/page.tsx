@@ -215,20 +215,20 @@ export default function Home() {
                     <div className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
 
                     {/* Content */}
-                    <span className="relative z-20 flex items-center justify-center gap-2.5 text-sm sm:text-base tracking-wide">
-                      <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
-                      {showResults ? "Rerun Diagnostics" : "Initiate Diagnostics"}
+                    <span className="relative z-20 flex items-center justify-center gap-3 text-lg sm:text-xl tracking-[0.25em] uppercase font-black" style={{ textShadow: "0 2px 15px rgba(255,255,255,0.4)" }}>
+                      <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-white drop-shadow-md" />
+                      <span>{showResults ? "RESTART" : "BEGIN"}</span>
                     </span>
                   </motion.button>
                 ) : (
                   <motion.button
                     onClick={stopTest}
-                    className="group relative px-8 py-3.5 sm:px-10 sm:py-4 rounded-full font-semibold text-white overflow-hidden transition-all duration-300 shadow-[0_4px_20px_rgba(239,68,68,0.4)] hover:shadow-[0_8px_30px_rgba(239,68,68,0.6)]"
+                    className="group relative px-8 py-3.5 sm:px-10 sm:py-4 rounded-full text-white overflow-hidden transition-all duration-300 shadow-[0_4px_20px_rgba(239,68,68,0.4)] hover:shadow-[0_8px_30px_rgba(239,68,68,0.6)]"
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    aria-label="Abort Diagnostics"
+                    aria-label="Abort Test"
                   >
                     {/* Primary Background */}
                     <div className="absolute inset-0 bg-red-600 transition-colors duration-300 group-hover:bg-red-500" />
@@ -237,9 +237,9 @@ export default function Home() {
                     <div className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
 
                     {/* Content */}
-                    <span className="relative z-20 flex items-center justify-center gap-2.5 text-sm sm:text-base tracking-wide">
-                      <Square className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
-                      Abort Diagnostics
+                    <span className="relative z-20 flex items-center justify-center gap-3 text-lg sm:text-xl tracking-[0.25em] uppercase font-black" style={{ textShadow: "0 2px 15px rgba(255,255,255,0.4)" }}>
+                      <Square className="w-5 h-5 sm:w-6 sm:h-6 fill-white drop-shadow-md" />
+                      <span>STOP</span>
                     </span>
                   </motion.button>
                 )}
