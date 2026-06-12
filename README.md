@@ -25,7 +25,7 @@
 
 <p align="center">
   <a href="https://github.com/sam-eer31/internet_speed_test" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/badge/%E2%9A%A1_Run_Speed_Test-Live_Demo-00b8f9?style=for-the-badge&logo=vercel&logoColor=white" alt="Run Speed Test" height="45" />
+    <img src="public/btn-run-test.svg" alt="Run Speed Test" width="220" />
   </a>
 </p>
 
