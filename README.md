@@ -9,14 +9,18 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <br />
   <a href="https://github.com/sam-eer31/internet_speed_test/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/sam-eer31/internet_speed_test?style=flat-square&color=blue" alt="License" />
+    <img src="https://img.shields.io/github/license/sam-eer31/internet_speed_test?style=for-the-badge&color=00b8f9" alt="License" />
   </a>
   <a href="https://github.com/sam-eer31/internet_speed_test/stargazers">
-    <img src="https://img.shields.io/github/stars/sam-eer31/internet_speed_test?style=flat-square&color=blue" alt="Stars" />
+    <img src="https://img.shields.io/github/stars/sam-eer31/internet_speed_test?style=for-the-badge&color=0045e0" alt="Stars" />
   </a>
   <a href="https://vercel.com">
-    <img src="https://img.shields.io/badge/deployed_on-Vercel-black?style=flat-square&logo=vercel" alt="Vercel" />
+    <img src="https://img.shields.io/badge/Deployed_on-Vercel-black?style=for-the-badge&logo=vercel" alt="Vercel" />
   </a>
 </p>
 
