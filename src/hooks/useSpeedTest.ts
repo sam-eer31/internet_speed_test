@@ -118,7 +118,7 @@ export function useSpeedTest() {
         fetch(`/api/download?size=1&warmup=1&t=${Date.now()}`, {
           cache: "no-store",
         }),
-        fetch(new URL(`/empty.txt`, window.location.origin).toString(), {
+        fetch("https://speed.cloudflare.com/__down?bytes=0", {
           cache: "no-store",
         }).then((res) => res.text()),
       ]);
@@ -131,13 +131,13 @@ export function useSpeedTest() {
 
   // ── Ping ──────────────────────────────────────────────────────────────────
   /**
-   * Measures latency by sending rapid sequential GET requests to the local static /empty.txt.
+   * Measures latency by sending rapid sequential GET requests to Cloudflare's static anycast endpoint.
    *
    * Correctness guarantees:
    * - Uses W3C Performance Resource Timing API to read the exact microsecond the 
    *   network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
-   * - Targets a cached static file (/empty.txt) without query parameters so Vercel 
-   *   serves it directly from Edge CDN memory (cache hit), removing origin routing and cold start execution.
+   * - Targets Cloudflare's static node (https://speed.cloudflare.com/__down?bytes=0) without query 
+   *   parameters so it hits their nearest Anycast datacenter peered directly with your ISP.
    * - Uses 'cache: no-store' to force network requests, and gets the latest timeline entry.
    * - First N_PING_DISCARD samples discarded (TCP slow-start / JIT warm-up).
    * - Reports median latency (robust to occasional outliers from scheduling).
@@ -155,7 +155,7 @@ export function useSpeedTest() {
     performance.clearResourceTimings();
 
     let i = 0;
-    const url = new URL(`/empty.txt`, window.location.origin).toString();
+    const url = "https://speed.cloudflare.com/__down?bytes=0";
 
     while (
       !abortRef.current && 
