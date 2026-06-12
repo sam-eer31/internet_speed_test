@@ -338,14 +338,19 @@ export function SpeedGauge({
             <stop offset="100%" stopColor={c1} />
           </linearGradient>
 
+          <linearGradient id="centerHubGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stopColor="rgba(255,255,255,0.12)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
+          </linearGradient>
+
           <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor={c2} stopOpacity="0.45" />
+            <stop offset="0%"   stopColor={c2} stopOpacity="0.3" />
             <stop offset="100%" stopColor={c2} stopOpacity="0" />
           </radialGradient>
 
           {/* Glow filter for the fill arc */}
           <filter id="arcGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feGaussianBlur stdDeviation="6" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -353,11 +358,11 @@ export function SpeedGauge({
           </filter>
 
           <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="10" />
+            <feGaussianBlur stdDeviation="12" />
           </filter>
 
           <filter id="needleGlow" x="-80%" y="-80%" width="260%" height="260%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -366,9 +371,9 @@ export function SpeedGauge({
         </defs>
 
         {/* ── Background tracks (static) ──────────────────────────────────── */}
-        <path d={fullOuterArc} fill="none" stroke="rgba(255,255,255,0.03)"  strokeWidth="2"  strokeLinecap="round" />
-        <path d={fullArc}      fill="none" stroke="rgba(255,255,255,0.065)" strokeWidth="12" strokeLinecap="round" />
-        <path d={fullInnerArc} fill="none" stroke="rgba(255,255,255,0.02)"  strokeWidth="1"  strokeLinecap="round" />
+        <path d={fullOuterArc} fill="none" stroke="rgba(255,255,255,0.025)"  strokeWidth="1.5"  strokeLinecap="round" />
+        <path d={fullArc}      fill="none" stroke="rgba(255,255,255,0.035)" strokeWidth="12" strokeLinecap="round" />
+        <path d={fullInnerArc} fill="none" stroke="rgba(255,255,255,0.015)"  strokeWidth="1"  strokeLinecap="round" />
 
         {/* ── Glow blur layer (wide, blurred — behind the fill) ────────────── */}
         <path
@@ -376,22 +381,16 @@ export function SpeedGauge({
           d={fullArc}
           fill="none"
           stroke={c2}
-          strokeWidth="20"
+          strokeWidth="22"
           strokeLinecap="round"
           strokeDasharray={TOTAL_LEN}
           strokeDashoffset={TOTAL_LEN}   /* fully hidden initially */
-          opacity="0.18"
+          opacity="0.22"
           filter="url(#softGlow)"
           style={{ visibility: "hidden" }}
         />
 
         {/* ── Crisp fill arc — THE main coloured ring ─────────────────────── */}
-        {/*
-            stroke-dasharray = TOTAL_LEN   → one dash = full arc
-            stroke-dashoffset = TOTAL_LEN  → fully offset = invisible
-            As dashoffset → 0 the arc fills from start to end.
-            This is a single continuous path — no segments, no gaps, no balls.
-        */}
         <path
           ref={fillRef}
           d={fullArc}
@@ -411,11 +410,11 @@ export function SpeedGauge({
           d={fullOuterArc}
           fill="none"
           stroke={c2}
-          strokeWidth="1.5"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeDasharray={arcLen(outerR, TOTAL_DEG)}
           strokeDashoffset={arcLen(outerR, TOTAL_DEG)}
-          opacity="0.45"
+          opacity="0.55"
           style={{ visibility: "hidden" }}
         />
 
@@ -426,7 +425,7 @@ export function SpeedGauge({
             ref={el => { minorLineRefs.current[i] = el; }}
             x1={t.inner.x} y1={t.inner.y}
             x2={t.outer.x} y2={t.outer.y}
-            stroke="rgba(255,255,255,0.07)"
+            stroke="rgba(255,255,255,0.08)"
             strokeWidth="0.8"
           />
         ))}
@@ -438,7 +437,7 @@ export function SpeedGauge({
               ref={el => { majorLineRefs.current[i] = el; }}
               x1={t.inner.x} y1={t.inner.y}
               x2={t.outer.x} y2={t.outer.y}
-              stroke="rgba(255,255,255,0.2)"
+              stroke="rgba(255,255,255,0.22)"
               strokeWidth="2"
               strokeLinecap="round"
             />
@@ -447,8 +446,9 @@ export function SpeedGauge({
               x={t.label.x} y={t.label.y}
               textAnchor="middle" dominantBaseline="middle"
               fill="rgba(255,255,255,0.25)"
-              fontSize="11" fontWeight="500"
+              fontSize="10" fontWeight="600"
               fontFamily="var(--font-inter), system-ui, sans-serif"
+              letterSpacing="0.05em"
             >
               {t.val}
             </text>
@@ -456,31 +456,30 @@ export function SpeedGauge({
         ))}
 
         {/* ── Centre ambient glow ───────────────────────────────────────────── */}
-        <circle cx={cx} cy={cy} r="55" fill="url(#centerGlow)" />
+        <circle cx={cx} cy={cy} r="60" fill="url(#centerGlow)" />
 
         {/* ── Needle ────────────────────────────────────────────────────────── */}
         <line
           ref={needleLineRef}
           x1={cx} y1={cy} x2={cx} y2={cy}
           stroke="url(#needleGrad)"
-          strokeWidth="2.5" strokeLinecap="round"
+          strokeWidth="3" strokeLinecap="round"
           filter="url(#needleGlow)"
           style={{ visibility: "hidden" }}
         />
         <circle
           ref={needleTipRef}
-          cx={cx} cy={cy} r="4.5"
+          cx={cx} cy={cy} r="5"
           fill={c1}
           filter="url(#needleGlow)"
           style={{ visibility: "hidden" }}
         />
 
         {/* ── Centre hub ────────────────────────────────────────────────────── */}
-        <circle cx={cx} cy={cy} r="15" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-        <circle cx={cx} cy={cy} r="10" fill="rgba(8,8,28,0.95)" />
-        <circle cx={cx} cy={cy} r="10" fill="none" stroke={c2} strokeWidth="1.5" opacity="0.6" />
-        <circle cx={cx} cy={cy} r="4"  fill={c2} opacity="0.85" />
-        <circle cx={cx} cy={cy} r="2"  fill="white" opacity="0.9" />
+        <circle cx={cx} cy={cy} r="22" fill="#06080d" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r="16" fill="url(#centerHubGrad)" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r="6"  fill={c2} opacity="0.95" filter="drop-shadow(0 0 3px rgba(255,255,255,0.4))" />
+        <circle cx={cx} cy={cy} r="2.5"  fill="white" opacity="0.95" />
 
         {/* ── Ripple rings when active ──────────────────────────────────────── */}
         {isActive && (
@@ -494,8 +493,8 @@ export function SpeedGauge({
       {/* ── Speed readout ─────────────────────────────────────────────────── */}
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-8">
         <span
-          className="text-[11px] font-semibold tracking-widest uppercase gauge-label-pulse"
-          style={{ color: c2, animationPlayState: isActive ? "running" : "paused", opacity: isActive ? undefined : 1 }}
+          className="text-xs font-bold tracking-[0.25em] uppercase gauge-label-pulse"
+          style={{ color: c2, animationPlayState: isActive ? "running" : "paused", opacity: isActive ? undefined : 0.8 }}
         >
           {label.icon} {label.text}
         </span>
@@ -503,7 +502,7 @@ export function SpeedGauge({
         <div className="mt-1 flex items-baseline gap-1">
           <span
             ref={numberRef}
-            className="text-5xl font-extrabold tabular-nums tracking-tight"
+            className="text-6xl font-black tabular-nums tracking-tight"
             style={{
               WebkitTextFillColor: "transparent",
               WebkitBackgroundClip: "text",
@@ -515,7 +514,7 @@ export function SpeedGauge({
           </span>
         </div>
 
-        <span className="text-white/35 text-xs font-medium tracking-wider">
+        <span className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] mt-0.5">
           {phase === "ping" ? "ms" : (unit === "byte" ? "MB/s" : "Mbps")}
         </span>
       </div>

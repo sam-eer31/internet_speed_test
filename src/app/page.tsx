@@ -63,20 +63,13 @@ export default function Home() {
   const showResults = progress.phase === "complete" && result;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#050510] via-[#0a0a2e] to-[#050510]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-indigo-500/[0.07] rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-[600px] h-[400px] bg-cyan-500/[0.05] rounded-full blur-[100px]" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+    <div className="relative min-h-screen overflow-x-hidden bg-[#030307]">
+      {/* Background Layout */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="bg-grid-overlay" />
+        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[900px] h-[700px] glow-blob-1 rounded-full blur-[140px] opacity-80" />
+        <div className="absolute top-[35%] left-[-15%] w-[600px] h-[600px] glow-blob-2 rounded-full blur-[130px] opacity-40 animate-pulse" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-[-15%] right-[-10%] w-[700px] h-[700px] glow-blob-3 rounded-full blur-[150px] opacity-50" />
       </div>
 
       <Particles />
@@ -92,10 +85,14 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.06] backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.5)] mb-5 text-[10px] sm:text-xs font-semibold tracking-wider text-indigo-300 uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                Real-Time Network Diagnostics
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 bg-gradient-to-b from-white via-slate-100 to-slate-400/80 bg-clip-text text-transparent tracking-tight">
                 Internet Speed Test
               </h1>
-              <p className="text-white/40 text-lg max-w-xl mx-auto">
+              <p className="text-slate-400/60 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
                 Measure your connection with precision. Real-time analytics,
                 beautiful visualizations, and comprehensive quality scoring.
               </p>
@@ -193,32 +190,32 @@ export default function Home() {
                 {!isRunning ? (
                   <motion.button
                     onClick={startTest}
-                    className="group relative px-8 py-4 rounded-2xl font-semibold text-white overflow-hidden"
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    className="group relative px-8 py-4 rounded-2xl font-bold text-white overflow-hidden shadow-[0_4px_25px_rgba(0,0,0,0.5)] transition-all duration-300 hover:shadow-[0_4px_30px_rgba(99,102,241,0.22)] border border-white/[0.08]"
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
                     aria-label="Start speed test"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-2xl" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="absolute inset-0 rounded-2xl shadow-[0_0_40px_rgba(99,102,241,0.3)]" />
-                    <span className="relative flex items-center gap-2.5 text-lg">
-                      <Play className="w-5 h-5" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 rounded-2xl" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="relative flex items-center gap-2.5 text-base sm:text-lg tracking-wide">
+                      <Play className="w-5 h-5 fill-white/10" />
                       {showResults ? "Test Again" : "Start Speed Test"}
                     </span>
                   </motion.button>
                 ) : (
                   <motion.button
                     onClick={stopTest}
-                    className="group relative px-8 py-4 rounded-2xl font-semibold text-white overflow-hidden"
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    className="group relative px-8 py-4 rounded-2xl font-bold text-white overflow-hidden shadow-[0_4px_25px_rgba(0,0,0,0.5)] border border-red-500/20"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     aria-label="Stop speed test"
                   >
-                    <div className="absolute inset-0 bg-red-600/80 rounded-2xl" />
-                    <span className="relative flex items-center gap-2.5 text-lg">
-                      <Square className="w-5 h-5" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-600/80 to-rose-600/80 rounded-2xl" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-500/95 to-rose-500/95 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="relative flex items-center gap-2.5 text-base sm:text-lg tracking-wide">
+                      <Square className="w-5 h-5 fill-white/10" />
                       Stop Test
                     </span>
                   </motion.button>

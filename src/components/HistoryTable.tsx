@@ -15,14 +15,14 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
   if (history.length === 0) {
     return (
       <motion.div
-        className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-8 text-center"
+        className="glass-panel rounded-2xl p-8 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Clock className="w-10 h-10 text-white/20 mx-auto mb-3" />
-        <p className="text-white/40 text-sm">No test history yet</p>
-        <p className="text-white/25 text-xs mt-1">Run a speed test to see results here</p>
+        <Clock className="w-8 h-8 text-slate-500 mx-auto mb-3" />
+        <p className="text-slate-300 font-semibold text-sm">No test history yet</p>
+        <p className="text-slate-500 text-xs mt-1">Run a speed test to see results here</p>
       </motion.div>
     );
   }
@@ -51,20 +51,22 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
 
   return (
     <motion.div
-      className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6"
+      className="glass-panel rounded-2xl p-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-indigo-400" />
-          <h3 className="text-white/80 font-semibold text-lg">Test History</h3>
+          <div className="p-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+            <Clock className="w-4 h-4 text-indigo-400" />
+          </div>
+          <h3 className="text-slate-300 font-bold uppercase tracking-wider text-xs">Test History</h3>
         </div>
         <div className="flex gap-2">
           <button
             onClick={handleExport}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-white/60 hover:text-white bg-white/[0.05] hover:bg-white/[0.1] rounded-lg transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] rounded-lg transition-all duration-200 font-medium cursor-pointer"
             aria-label="Download results as CSV"
           >
             <Download className="w-3.5 h-3.5" />
@@ -72,7 +74,7 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
           </button>
           <button
             onClick={onClear}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-red-400/80 hover:text-red-400 bg-red-500/5 hover:bg-red-500/10 rounded-lg transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 border border-red-500/15 rounded-lg transition-all duration-200 font-medium cursor-pointer"
             aria-label="Clear test history"
           >
             <Trash2 className="w-3.5 h-3.5" />

@@ -34,28 +34,29 @@ export function MetricCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
     >
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
-        style={{ backgroundColor: `${color}15` }}
+      {/* Background soft hover aura */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
+        style={{ backgroundColor: `${color}0c` }}
       />
-      <div className="relative bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300">
+      <div className="relative glass-panel rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
         <div className="flex items-center gap-3 mb-4">
           <div
-            className="p-2.5 rounded-xl"
-            style={{ backgroundColor: `${color}15` }}
+            className="p-2.5 rounded-xl border border-white/[0.04]"
+            style={{ backgroundColor: `${color}0f` }}
           >
             <Icon className="w-5 h-5" style={{ color }} />
           </div>
-          <span className="text-white/60 text-sm font-medium">{label}</span>
+          <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">{label}</span>
         </div>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-3xl font-bold text-white tabular-nums">
+        <div className="flex items-baseline gap-2 mb-1.5">
+          <span className="text-3xl font-extrabold text-slate-100 tabular-nums tracking-tight">
             {animatedValue.toFixed(decimals)}
           </span>
-          <span className="text-white/40 text-sm">{unit}</span>
+          <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">{unit}</span>
         </div>
 
-        <p className="text-white/30 text-xs">{description}</p>
+        <p className="text-slate-500 text-xs font-normal leading-relaxed">{description}</p>
       </div>
     </motion.div>
   );

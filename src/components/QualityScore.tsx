@@ -19,14 +19,14 @@ export function QualityScore({ score, rating }: QualityScoreProps) {
 
   return (
     <motion.div
-      className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 flex flex-col items-center"
+      className="glass-panel rounded-2xl p-6 flex flex-col items-center"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center gap-2 mb-4">
-        <Shield className="w-5 h-5" style={{ color }} />
-        <h3 className="text-white/80 font-semibold">Connection Quality</h3>
+        <Shield className="w-5 h-5 animate-pulse" style={{ color }} />
+        <h3 className="text-slate-300 font-bold uppercase tracking-wider text-xs">Connection Quality</h3>
       </div>
 
       <div className="relative w-32 h-32 mb-4">
