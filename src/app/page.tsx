@@ -19,6 +19,7 @@ import { ProgressSteps } from "@/components/ProgressSteps";
 import { MetricCard } from "@/components/MetricCard";
 import { QualityScore } from "@/components/QualityScore";
 import { LiveChart } from "@/components/LiveChart";
+import { NetworkUseCases } from "@/components/NetworkUseCases";
 import { DeviceInfo } from "@/components/DeviceInfo";
 import { HistoryTable } from "@/components/HistoryTable";
 import { ShareCard } from "@/components/ShareCard";
@@ -317,6 +318,9 @@ export default function Home() {
                       </div>
                     )}
                   </div>
+
+                  {/* Network Use Cases */}
+                  <NetworkUseCases result={result} />
 
                   {/* Share Card */}
                   <ShareCard result={result} unit={unit} />
