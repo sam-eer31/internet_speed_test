@@ -124,7 +124,7 @@ export default function Home() {
                   showResults
                     ? (unit === "byte" ? result.download / 8 : result.download)
                     : (progress.phase === "ping"
-                        ? progress.currentSpeed
+                        ? 0
                         : (unit === "byte" ? progress.currentSpeed / 8 : progress.currentSpeed))
                 }
                 phase={progress.phase}

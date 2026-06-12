@@ -27,7 +27,7 @@ const TOTAL_DEG  = END_DEG - START_DEG; // 260°
 // ─── Phase helpers ────────────────────────────────────────────────────────────
 function getColors(phase: TestPhase): [string, string, string] {
   switch (phase) {
-    case "ping":     return ["#a78bfa", "#8b5cf6", "#7c3aed"];
+    case "ping":     return ["#818cf8", "#6366f1", "#4f46e5"];
     case "download": return ["#60a5fa", "#3b82f6", "#2563eb"];
     case "upload":   return ["#34d399", "#10b981", "#059669"];
     case "complete": return ["#22d3ee", "#06b6d4", "#0891b2"];
@@ -37,7 +37,7 @@ function getColors(phase: TestPhase): [string, string, string] {
 
 function getLabel(phase: TestPhase) {
   switch (phase) {
-    case "ping":     return { icon: "◉", text: "Latency" };
+    case "ping":     return { icon: "◉", text: "Connecting" };
     case "download": return { icon: "↓", text: "Download" };
     case "upload":   return { icon: "↑", text: "Upload" };
     case "complete": return { icon: "✓", text: "Complete" };
@@ -292,9 +292,13 @@ export function SpeedGauge({
 
       // ── Number readout — uses raw speed spring, NOT capped pct ──────────
       if (numberRef.current) {
-        const v = numPos.current; // uncapped raw Mbps value
-        numberRef.current.textContent =
-          v < 10 ? v.toFixed(2) : v < 100 ? v.toFixed(1) : v.toFixed(0);
+        if (phase === "ping") {
+          numberRef.current.textContent = "---";
+        } else {
+          const v = numPos.current; // uncapped raw Mbps value
+          numberRef.current.textContent =
+            v < 10 ? v.toFixed(2) : v < 100 ? v.toFixed(1) : v.toFixed(0);
+        }
         numberRef.current.style.backgroundImage = numberGradBg(c1, c2);
         numberRef.current.style.setProperty("-webkit-background-clip", "text");
         numberRef.current.style.setProperty("background-clip", "text");
@@ -532,7 +536,7 @@ export function SpeedGauge({
         </div>
 
         <span className="font-bold uppercase tracking-[0.2em] text-[10px] mt-0.5" style={{ color: "var(--text-secondary)" }}>
-          {phase === "ping" ? "ms" : (unit === "byte" ? "MB/s" : "Mbps")}
+          {phase === "ping" ? "" : (unit === "byte" ? "MB/s" : "Mbps")}
         </span>
       </div>
     </div>
