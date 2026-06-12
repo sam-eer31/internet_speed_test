@@ -203,37 +203,63 @@ export default function Home() {
                 {!isRunning ? (
                   <motion.button
                     onClick={startTest}
-                    className="group relative px-8 py-4 rounded-2xl font-bold text-white overflow-hidden transition-all duration-300 hover:shadow-[0_4px_30px_rgba(99,102,241,0.22)]"
-                    style={{
-                      boxShadow: "var(--cta-shadow)",
-                      border: "1px solid var(--cta-border)",
-                    }}
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="group relative px-10 py-5 sm:px-12 sm:py-6 rounded-full font-bold text-white overflow-hidden transition-all duration-500"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     aria-label="Start speed test"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 rounded-2xl" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="relative flex items-center gap-2.5 text-base sm:text-lg tracking-wide">
-                      <Play className="w-5 h-5 fill-white/10" />
-                      {showResults ? "Test Again" : "Start Speed Test"}
+                    {/* Animated glowing background shadow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-60 group-hover:opacity-100 group-hover:blur-2xl transition-all duration-500 animate-pulse" style={{ animationDuration: '3s' }} />
+                    
+                    {/* Inner glowing edge */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-full" />
+                    
+                    {/* Inner button surface for glass effect */}
+                    <div className="absolute inset-[2px] sm:inset-[3px] bg-gray-950/80 backdrop-blur-xl rounded-full z-10 border border-white/10 group-hover:border-white/20 group-hover:bg-gray-900/60 transition-all duration-500" />
+                    
+                    {/* Shimmer effect */}
+                    <div className="absolute top-0 bottom-0 left-0 w-1/2 z-20 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out" />
+
+                    {/* Content */}
+                    <span className="relative z-30 flex items-center justify-center gap-3 text-lg sm:text-2xl tracking-widest uppercase">
+                      <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 group-hover:bg-white/20 transition-colors duration-300 shadow-[0_0_15px_rgba(255,255,255,0.15)] backdrop-blur-md">
+                        <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-white text-white ml-1 drop-shadow-md" />
+                      </div>
+                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300 drop-shadow-sm font-extrabold">
+                        {showResults ? "Test Again" : "Start Test"}
+                      </span>
                     </span>
                   </motion.button>
                 ) : (
                   <motion.button
                     onClick={stopTest}
-                    className="group relative px-8 py-4 rounded-2xl font-bold text-white overflow-hidden shadow-[0_4px_25px_rgba(0,0,0,0.5)] border border-red-500/20"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    className="group relative px-10 py-5 sm:px-12 sm:py-6 rounded-full font-bold text-white overflow-hidden transition-all duration-500"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     aria-label="Stop speed test"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-600/80 to-rose-600/80 rounded-2xl" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-500/95 to-rose-500/95 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="relative flex items-center gap-2.5 text-base sm:text-lg tracking-wide">
-                      <Square className="w-5 h-5 fill-white/10" />
-                      Stop Test
+                    {/* Animated glowing background shadow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-rose-500 to-orange-500 rounded-full blur-xl opacity-60 group-hover:opacity-100 group-hover:blur-2xl transition-all duration-500 animate-pulse" style={{ animationDuration: '2s' }} />
+                    
+                    {/* Inner glowing edge */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 rounded-full" />
+                    
+                    {/* Inner button surface for glass effect */}
+                    <div className="absolute inset-[2px] sm:inset-[3px] bg-gray-950/80 backdrop-blur-xl rounded-full z-10 border border-red-500/30 group-hover:border-red-500/50 group-hover:bg-gray-900/60 transition-all duration-500" />
+                    
+                    {/* Shimmer effect */}
+                    <div className="absolute top-0 bottom-0 left-0 w-1/2 z-20 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out" />
+
+                    {/* Content */}
+                    <span className="relative z-30 flex items-center justify-center gap-3 text-lg sm:text-2xl tracking-widest uppercase">
+                      <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500/20 group-hover:bg-red-500/40 transition-colors duration-300 shadow-[0_0_15px_rgba(239,68,68,0.3)] backdrop-blur-md">
+                        <Square className="w-4 h-4 sm:w-5 sm:h-5 fill-white text-white drop-shadow-md" />
+                      </div>
+                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300 drop-shadow-sm font-extrabold">
+                        Stop Test
+                      </span>
                     </span>
                   </motion.button>
                 )}
