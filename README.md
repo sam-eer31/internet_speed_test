@@ -16,9 +16,6 @@
   <a href="https://github.com/sam-eer31/internet_speed_test/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/sam-eer31/internet_speed_test?style=flat&color=00b8f9" alt="License" />
   </a>
-  <a href="https://vercel.com">
-    <img src="https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat&logo=vercel" alt="Vercel" />
-  </a>
 </p>
 
 <p align="center">
