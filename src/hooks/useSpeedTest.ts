@@ -113,9 +113,13 @@ export function useSpeedTest() {
   // ── Warm-up ───────────────────────────────────────────────────────────────
   const warmUp = useCallback(async () => {
     try {
-      // Establish connections to local API and Cloudflare CDN to warm sockets
+      // Establish connections to local API, Google GGC, and Cloudflare CDN to warm sockets
       await Promise.all([
         fetch(`/api/download?size=1&warmup=1&t=${Date.now()}`, {
+          cache: "no-store",
+        }),
+        fetch("https://www.google.com/generate_204", {
+          mode: "no-cors",
           cache: "no-store",
         }),
         fetch("https://speed.cloudflare.com/__down?bytes=0", {
@@ -131,17 +135,15 @@ export function useSpeedTest() {
 
   // ── Ping ──────────────────────────────────────────────────────────────────
   /**
-   * Measures latency by sending rapid sequential GET requests to Cloudflare's static anycast endpoint.
+   * Measures latency by sending rapid sequential GET requests to Google's generate_204 endpoint.
    *
    * Correctness guarantees:
-   * - Uses W3C Performance Resource Timing API to read the exact microsecond the 
-   *   network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
-   * - Targets Cloudflare's static node (https://speed.cloudflare.com/__down?bytes=0) without query 
-   *   parameters so it hits their nearest Anycast datacenter peered directly with your ISP.
-   * - Uses 'cache: no-store' to force network requests, and gets the latest timeline entry.
+   * - Targets Google's GGC (Google Global Cache) edge nodes peered directly inside your ISP 
+   *   network, providing your true local last-mile internet connection latency.
+   * - Uses 'mode: no-cors' to bypass CORS blocks, and 'cache: no-store' to force network requests.
    * - First N_PING_DISCARD samples discarded (TCP slow-start / JIT warm-up).
    * - Reports median latency (robust to occasional outliers from scheduling).
-   * - Jitter = mean absolute deviation of consecutive samples (RFC 3550).
+   * - Jitter = mean absolute variation of consecutive samples (RFC 3550).
    */
   const measurePing = useCallback(async (): Promise<{
     ping: number;
@@ -155,7 +157,6 @@ export function useSpeedTest() {
     performance.clearResourceTimings();
 
     let i = 0;
-    const url = "https://speed.cloudflare.com/__down?bytes=0";
 
     while (
       !abortRef.current && 
@@ -164,35 +165,11 @@ export function useSpeedTest() {
     ) {
       const t0 = performance.now();
       try {
-        const res = await fetch(url, { cache: "no-store" });
-        await res.text(); // keep-alive the connection
+        const url = `https://www.google.com/generate_204?t=${Date.now()}-${i}`;
+        await fetch(url, { mode: "no-cors", cache: "no-store" });
         const t1 = performance.now();
 
         let currentPingMs = t1 - t0;
-
-        // Use W3C Performance Resource Timing API to read the exact microsecond the 
-        // network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
-        // We select the latest entry in the timeline for this URL.
-        let entry: PerformanceResourceTiming | null = null;
-        const entries = performance.getEntriesByName(url);
-        if (entries && entries.length > 0) {
-          entry = entries[entries.length - 1] as PerformanceResourceTiming;
-        }
-
-        if (entry && entry.responseStart > 0 && entry.requestStart > 0) {
-          currentPingMs = entry.responseStart - entry.requestStart;
-        } else {
-          // Fallback with retry delay to let browser flush timeline
-          await new Promise((resolve) => setTimeout(resolve, 1));
-          const retryEntries = performance.getEntriesByName(url);
-          if (retryEntries && retryEntries.length > 0) {
-            const retryEntry = retryEntries[retryEntries.length - 1] as PerformanceResourceTiming;
-            if (retryEntry.responseStart > 0 && retryEntry.requestStart > 0) {
-              currentPingMs = retryEntry.responseStart - retryEntry.requestStart;
-            }
-          }
-        }
-
         rawPings.push(currentPingMs);
       } catch {
         // Skip failed ping
