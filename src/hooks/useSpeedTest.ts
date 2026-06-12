@@ -118,7 +118,7 @@ export function useSpeedTest() {
         fetch(`/api/download?size=1&warmup=1&t=${Date.now()}`, {
           cache: "no-store",
         }),
-        fetch(new URL(`/api/ping?warmup=1&t=${Date.now()}`, window.location.origin).toString(), {
+        fetch(new URL(`/empty.txt`, window.location.origin).toString(), {
           cache: "no-store",
         }).then((res) => res.text()),
       ]);
@@ -131,12 +131,14 @@ export function useSpeedTest() {
 
   // ── Ping ──────────────────────────────────────────────────────────────────
   /**
-   * Measures latency by sending rapid sequential GET requests to the local same-origin /api/ping.
+   * Measures latency by sending rapid sequential GET requests to the local static /empty.txt.
    *
    * Correctness guarantees:
    * - Uses W3C Performance Resource Timing API to read the exact microsecond the 
    *   network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
-   * - Resolves relative endpoint to absolute URL so browser timeline lookup succeeds.
+   * - Targets a cached static file (/empty.txt) without query parameters so Vercel 
+   *   serves it directly from Edge CDN memory (cache hit), removing origin routing and cold start execution.
+   * - Uses 'cache: no-store' to force network requests, and gets the latest timeline entry.
    * - First N_PING_DISCARD samples discarded (TCP slow-start / JIT warm-up).
    * - Reports median latency (robust to occasional outliers from scheduling).
    * - Jitter = mean absolute deviation of consecutive samples (RFC 3550).
@@ -153,6 +155,8 @@ export function useSpeedTest() {
     performance.clearResourceTimings();
 
     let i = 0;
+    const url = new URL(`/empty.txt`, window.location.origin).toString();
+
     while (
       !abortRef.current && 
       rawPings.length < N_PING && 
@@ -160,7 +164,6 @@ export function useSpeedTest() {
     ) {
       const t0 = performance.now();
       try {
-        const url = new URL(`/api/ping?t=${Date.now()}-${i}`, window.location.origin).toString();
         const res = await fetch(url, { cache: "no-store" });
         await res.text(); // keep-alive the connection
         const t1 = performance.now();
@@ -169,6 +172,7 @@ export function useSpeedTest() {
 
         // Use W3C Performance Resource Timing API to read the exact microsecond the 
         // network card received the first byte (TTFB), completely bypassing JS Event Loop lag.
+        // We select the latest entry in the timeline for this URL.
         let entry: PerformanceResourceTiming | null = null;
         const entries = performance.getEntriesByName(url);
         if (entries && entries.length > 0) {
