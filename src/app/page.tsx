@@ -152,7 +152,7 @@ export default function Home() {
                       <span className="text-white/40">
                         Ping:{" "}
                         <span className="text-purple-400 font-semibold tabular-nums">
-                          {progress.ping.toFixed(1)} ms
+                          {(progress.ping ?? 0).toFixed(1)} ms
                         </span>
                       </span>
                     )}
@@ -243,7 +243,7 @@ export default function Home() {
                     <MetricCard
                       icon={Activity}
                       label="Ping"
-                      value={result.ping}
+                      value={result.ping ?? 0}
                       unit="ms"
                       description="Network latency"
                       color="#8b5cf6"
@@ -271,7 +271,7 @@ export default function Home() {
                     <MetricCard
                       icon={Waves}
                       label="Jitter"
-                      value={result.jitter}
+                      value={result.jitter ?? 0}
                       unit="ms"
                       description="Latency variation"
                       color="#f59e0b"

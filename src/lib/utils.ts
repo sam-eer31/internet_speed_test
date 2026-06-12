@@ -42,7 +42,8 @@ export function formatMbps(mbps: number): string {
   return mbps.toFixed(2) + " Mbps";
 }
 
-export function formatMs(ms: number): string {
+export function formatMs(ms: number | undefined | null): string {
+  if (ms === undefined || ms === null || isNaN(ms)) return "0.0 ms";
   return ms.toFixed(1) + " ms";
 }
 

@@ -37,7 +37,7 @@ export function ShareCard({ result, unit }: ShareCardProps) {
   }, []);
 
   const handleShare = useCallback(async () => {
-    const text = `My Speed Test Results:\nDownload: ${downloadVal.toFixed(2)} ${unitStr}\nUpload: ${uploadVal.toFixed(2)} ${unitStr}\nPing: ${result.ping.toFixed(1)} ms\nJitter: ${result.jitter.toFixed(1)} ms\nQuality: ${result.qualityRating} (${result.qualityScore}/100)`;
+    const text = `My Speed Test Results:\nDownload: ${downloadVal.toFixed(2)} ${unitStr}\nUpload: ${uploadVal.toFixed(2)} ${unitStr}\nPing: ${(result.ping ?? 0).toFixed(1)} ms\nJitter: ${(result.jitter ?? 0).toFixed(1)} ms\nQuality: ${result.qualityRating} (${result.qualityScore}/100)`;
 
     if (navigator.share) {
       try {
@@ -93,14 +93,14 @@ export function ShareCard({ result, unit }: ShareCardProps) {
           <div className="bg-white/[0.04] rounded-xl p-4">
             <p className="text-white/40 text-xs mb-1">Ping</p>
             <p className="text-2xl font-bold text-purple-400">
-              {result.ping.toFixed(1)}
+              {(result.ping ?? 0).toFixed(1)}
             </p>
             <p className="text-white/30 text-xs">ms</p>
           </div>
           <div className="bg-white/[0.04] rounded-xl p-4">
             <p className="text-white/40 text-xs mb-1">Jitter</p>
             <p className="text-2xl font-bold text-amber-400">
-              {result.jitter.toFixed(1)}
+              {(result.jitter ?? 0).toFixed(1)}
             </p>
             <p className="text-white/30 text-xs">ms</p>
           </div>
