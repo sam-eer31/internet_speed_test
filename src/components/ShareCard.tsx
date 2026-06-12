@@ -71,10 +71,13 @@ export function ShareCard({ result, unit }: ShareCardProps) {
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center">
-              <span className="text-white font-bold text-xs">F</span>
-            </div>
-            <span className="font-bold" style={{ color: "var(--text-primary)" }}>Flynk</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
+              alt="Site Logo"
+              style={{ height: 24, width: "auto" }}
+              className="object-contain"
+            />
           </div>
           <span className="text-xs" style={{ color: "var(--text-muted)" }}>
             {new Date(result.timestamp).toLocaleDateString()}
