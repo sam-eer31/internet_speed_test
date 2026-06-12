@@ -48,17 +48,15 @@ Run your speed test instantly: **[flynk-speedtest.vercel.app](https://github.com
 
 ## ✨ Key Features
 
-- **⚡ Precision & Speed:** Real-time download and upload measurements using Tier-1 high-performance Cloudflare edge endpoints and Google GGC servers.
-- **🎨 Glassmorphic Interface:** A stunning dark/light dashboard styled with HSL tailored indigo and cyan gradients, smooth Framer Motion animations, and a dynamic real-time Speed Gauge.
-- **📈 Real-Time Charts:** Live-updating network performance tracking graphs powered by Recharts.
-- **🎮 Real-World Use-Case Ratings:** Intelligent analytics rating your connection quality for specific online tasks:
-  - **Online Gaming:** Latency and jitter optimization assessment.
-  - **Video Calling:** Buffer-free meetings on Zoom, Teams, and Google Meet.
-  - **Browsing Quality:** Social media loading and web page responsiveness.
-  - **4K UHD Streaming:** Bandwidth check for high-resolution streaming.
-- **🔒 Privacy-Focused Device & Network Info:** Accurate extraction of user OS, browser engine, and ISP using verified HTTP headers via `ua-parser-js` without tracking.
-- **📸 Scorecard Sharing:** Generate and export a custom, styled PNG scorecard of your speed test results with one click.
-- **🎛️ Customization:** Toggle between Light and Dark themes, and switch easily between Bit (Mbps) and Byte (MB/s) measuring units.
+| Feature | Capabilities & Description | Technology / Method |
+| :--- | :--- | :--- |
+| **⚡ High-Precision Metrics** | Real-time measurement of download throughput, upload throughput, ping, and jitter. | Leverages Tier-1 high-performance Cloudflare edge nodes and Google GGC endpoints for maximum precision. |
+| **🎨 Glassmorphic Dashboard** | Responsive dark/light theme options, customized indigo/cyan brand gradients, and micro-interactions. | Fluid animations powered by `framer-motion` and a customized SVG real-time Speed Gauge. |
+| **📊 Live Performance Charts** | Dynamic, real-time tracking graphs charting throughput changes throughout the diagnostics phase. | Powered by `recharts` for responsive, animated, and lightweight canvas rendering. |
+| **🎮 Intelligent Use-Case Grading** | Real-world rating of network quality for specific tasks:<br>• **Online Gaming:** Latency & jitter sensitivity analysis<br>• **Video Calling:** Buffer-free Zoom/Teams assessment<br>• **Browsing Quality:** Social media & script load responsiveness<br>• **4K UHD Streaming:** High-bandwidth connection rating | Dynamic scoring engine translating raw metrics into descriptive performance grades. |
+| **🔒 Privacy-First Device Info** | Extracts and displays verified OS, browser engine, and ISP details. | Zero trackers or intrusive client-side hardware scraping; utilizes verified `ua-parser-js` matching. |
+| **📸 Custom PNG Export** | Instantly generates a clean, shareable scorecard card containing final test metrics. | Client-side export using `html-to-image` for high-quality PNG rendering and immediate downloads. |
+| **🎛️ Multi-Unit Options** | Single-tap controls to toggle metrics between **Bits (Mbps)** and **Bytes (MB/s)**. | Contextual conversion logic built directly into the gauge and metric cards. |
 
 ---
 
