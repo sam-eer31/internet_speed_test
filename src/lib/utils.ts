@@ -1,4 +1,5 @@
 import { QualityRating, SpeedTestResult } from "@/types";
+import { UAParser } from "ua-parser-js";
 
 export function calculateQualityScore(
   ping: number,
@@ -79,42 +80,59 @@ export function clearHistory(): void {
   localStorage.removeItem("speedtest-history");
 }
 
-export function detectBrowser(): string {
-  if (typeof navigator === "undefined") return "Unknown";
-  const ua = navigator.userAgent;
-  if (ua.includes("Firefox")) return "Firefox";
-  if (ua.includes("Edg")) return "Microsoft Edge";
-  if (ua.includes("Chrome")) return "Chrome";
-  if (ua.includes("Safari")) return "Safari";
-  if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
-  return "Unknown";
-}
+
 
 export function detectDeviceInfo() {
   if (typeof navigator === "undefined" || typeof window === "undefined") {
     return {
       browser: "Unknown",
-      platform: "Unknown",
+      os: "Unknown",
+      deviceType: "Desktop",
       screenResolution: "Unknown",
       deviceMemory: "Unknown",
       cpuCores: "Unknown",
-      userAgent: "Unknown",
       connectionType: "Unknown",
     };
   }
 
+  const parser = new UAParser(navigator.userAgent);
+  const browser = parser.getBrowser();
+  const os = parser.getOS();
+  const device = parser.getDevice();
+
   const nav = navigator as Navigator & {
     deviceMemory?: number;
-    connection?: { effectiveType?: string; type?: string };
+    connection?: { effectiveType?: string; type?: string; downlink?: number };
   };
 
+  const browserStr = browser.name ? `${browser.name} ${browser.version?.split('.')[0] || ''}`.trim() : "Unknown Browser";
+  const osStr = os.name ? `${os.name} ${os.version || ''}`.trim() : "Unknown OS";
+  
+  let deviceType = device.type ? device.type.charAt(0).toUpperCase() + device.type.slice(1) : "Desktop";
+  if (device.vendor && device.model) {
+    deviceType = `${device.vendor} ${device.model}`;
+  }
+
+  let connStr = "Unknown";
+  if (nav.connection) {
+    const type = nav.connection.type || nav.connection.effectiveType;
+    if (type) {
+      connStr = type.charAt(0).toUpperCase() + type.slice(1);
+      if (connStr === "Wifi") connStr = "WiFi";
+      if (nav.connection.effectiveType && ["slow-2g", "2g", "3g", "4g"].includes(nav.connection.effectiveType)) {
+        connStr = nav.connection.effectiveType.toUpperCase();
+        if (nav.connection.type === "cellular") connStr += " Cellular";
+      }
+    }
+  }
+
   return {
-    browser: detectBrowser(),
-    platform: nav.platform || "Unknown",
-    screenResolution: `${window.screen.width}x${window.screen.height}`,
-    deviceMemory: nav.deviceMemory ? `${nav.deviceMemory} GB` : "Not available",
-    cpuCores: nav.hardwareConcurrency ? `${nav.hardwareConcurrency} cores` : "Not available",
-    userAgent: nav.userAgent,
-    connectionType: nav.connection?.effectiveType || nav.connection?.type || "Not available",
+    browser: browserStr,
+    os: osStr,
+    deviceType: deviceType,
+    screenResolution: `${window.screen.width} × ${window.screen.height}`,
+    deviceMemory: nav.deviceMemory ? `${nav.deviceMemory} GB` : "N/A",
+    cpuCores: nav.hardwareConcurrency ? `${nav.hardwareConcurrency} Cores` : "N/A",
+    connectionType: connStr,
   };
 }

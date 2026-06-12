@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Monitor, Cpu, HardDrive, Globe, Wifi, Smartphone } from "lucide-react";
+import { Monitor, Cpu, Maximize, Globe, Wifi, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { detectDeviceInfo } from "@/lib/utils";
 
@@ -16,11 +16,11 @@ export function DeviceInfo() {
 
   const items = [
     { icon: Globe, label: "Browser", value: info.browser },
-    { icon: Monitor, label: "Platform", value: info.platform },
-    { icon: Smartphone, label: "Screen", value: info.screenResolution },
-    { icon: HardDrive, label: "Memory", value: info.deviceMemory },
-    { icon: Cpu, label: "CPU", value: info.cpuCores },
-    { icon: Wifi, label: "Connection", value: info.connectionType },
+    { icon: Monitor, label: "OS", value: info.os },
+    { icon: Smartphone, label: "Device", value: info.deviceType },
+    { icon: Maximize, label: "Display", value: info.screenResolution },
+    { icon: Cpu, label: "Hardware", value: `${info.cpuCores} • ${info.deviceMemory}` },
+    { icon: Wifi, label: "Network", value: info.connectionType },
   ];
 
   return (
