@@ -35,7 +35,9 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
         (r) => {
           const dl = unit === "byte" ? r.download / 8 : r.download;
           const ul = unit === "byte" ? r.upload / 8 : r.upload;
-          return `${new Date(r.timestamp).toLocaleString()},${(r.ping ?? 0).toFixed(1)},${(r.jitter ?? 0).toFixed(1)},${dl.toFixed(2)},${ul.toFixed(2)},${r.qualityScore},${r.qualityRating}`;
+          const pingVal = unit === "byte" ? (r.ping ?? 0) / 8 : (r.ping ?? 0);
+          const jitterVal = unit === "byte" ? (r.jitter ?? 0) / 8 : (r.jitter ?? 0);
+          return `${new Date(r.timestamp).toLocaleString()},${pingVal.toFixed(1)},${jitterVal.toFixed(1)},${dl.toFixed(2)},${ul.toFixed(2)},${r.qualityScore},${r.qualityRating}`;
         }
       ),
     ].join("\n");
@@ -115,7 +117,7 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
                 </td>
 
                 <td className="py-3 px-3 text-right text-sm text-purple-400 tabular-nums">
-                  {(result.ping ?? 0).toFixed(1)} ms
+                  {(unit === "byte" ? (result.ping ?? 0) / 8 : (result.ping ?? 0)).toFixed(1)} ms
                 </td>
                 <td className="py-3 px-3 text-right text-sm text-blue-400 tabular-nums">
                   {(unit === "byte" ? result.download / 8 : result.download).toFixed(2)}
