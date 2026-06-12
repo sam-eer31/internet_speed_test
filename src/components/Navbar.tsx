@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gauge, ExternalLink, Menu, X, Settings } from "lucide-react";
+import { ExternalLink, Menu, X, Settings, Sun, Moon, Monitor } from "lucide-react";
 import Link from "next/link";
+
+import { useTheme } from "@/components/ThemeProvider";
 
 interface NavbarProps {
   unit: "bit" | "byte";
@@ -16,26 +18,41 @@ const navLinks = [
   { label: "About", href: "#about" },
 ];
 
+const themeOptions = [
+  { value: "system" as const, label: "System", icon: Monitor },
+  { value: "light" as const, label: "Light", icon: Sun },
+  { value: "dark" as const, label: "Dark", icon: Moon },
+];
+
 export function Navbar({ unit, onUnitChange }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { theme, resolvedTheme, setTheme } = useTheme();
 
   return (
     <motion.nav
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-7xl bg-[#06080d]/65 backdrop-blur-xl border border-white/[0.06] rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
+      className="fixed top-4 left-1/2 z-50 w-[92%] max-w-7xl backdrop-blur-xl rounded-2xl"
+      style={{
+        background: "var(--nav-bg)",
+        borderColor: "var(--nav-border)",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        boxShadow: "var(--nav-shadow)",
+      }}
       initial={{ y: -100, x: "-50%" }}
       animate={{ y: 0, x: "-50%" }}
       transition={{ duration: 0.5, type: "spring", stiffness: 100, damping: 20 }}
     >
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500/15 to-cyan-500/15 group-hover:from-indigo-500/25 group-hover:to-cyan-500/25 transition-all duration-300">
-              <Gauge className="w-5 h-5 text-indigo-400" />
-            </div>
-            <span className="text-base font-bold text-white tracking-tight">
-              Speed<span className="text-indigo-400">Test</span>
-            </span>
+          <Link href="/" className="flex items-center group">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
+              alt="Flynk"
+              style={{ height: 32, width: "auto" }}
+              className="object-contain transition-opacity duration-300 group-hover:opacity-80"
+            />
           </Link>
  
           {/* Desktop Menu */}
@@ -44,7 +61,16 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
               <a
                 key={link.label}
                 href={link.href}
-                className="px-3.5 py-1.5 text-xs font-medium text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition-all duration-200"
+                className="px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
+                style={{ color: "var(--nav-link-color)" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "var(--text-primary)";
+                  e.currentTarget.style.background = "var(--nav-link-hover-bg)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "var(--nav-link-color)";
+                  e.currentTarget.style.background = "transparent";
+                }}
               >
                 {link.label}
               </a>
@@ -53,7 +79,16 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
               href="https://github.com/sam-eer31/internet_speed_test"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition-all duration-200"
+              className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-200"
+              style={{ color: "var(--nav-link-color)" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "var(--text-primary)";
+                e.currentTarget.style.background = "var(--nav-link-hover-bg)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "var(--nav-link-color)";
+                e.currentTarget.style.background = "transparent";
+              }}
             >
               <ExternalLink className="w-3.5 h-3.5" />
               GitHub
@@ -63,9 +98,11 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
             <div className="relative ml-2">
               <button
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                className={`p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all duration-200 ${
-                  isSettingsOpen ? "bg-white/[0.04] text-white" : ""
-                }`}
+                className="p-2 rounded-lg transition-all duration-200"
+                style={{
+                  color: isSettingsOpen ? "var(--text-primary)" : "var(--nav-link-color)",
+                  background: isSettingsOpen ? "var(--nav-link-hover-bg)" : "transparent",
+                }}
                 aria-label="Settings"
               >
                 <Settings className={`w-4 h-4 transition-transform duration-300 ${isSettingsOpen ? "rotate-45" : ""}`} />
@@ -80,29 +117,69 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-52 bg-[#090c15]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-[0_12px_35px_rgba(0,0,0,0.6)] z-50"
+                      className="absolute right-0 mt-2 w-56 backdrop-blur-xl rounded-2xl p-4 z-50"
+                      style={{
+                        background: "var(--dropdown-bg)",
+                        border: "1px solid var(--dropdown-border)",
+                        boxShadow: "var(--dropdown-shadow)",
+                      }}
                     >
-                      <p className="text-[9px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                      <p className="text-[9px] font-bold tracking-widest uppercase mb-2.5" style={{ color: "var(--text-faint)" }}>
                         Settings
                       </p>
+
+                      {/* Theme Section */}
+                      <div className="mb-4">
+                        <p className="text-xs font-semibold mb-2" style={{ color: "var(--text-muted)" }}>
+                          Theme
+                        </p>
+                        <div className="flex rounded-lg p-0.5 relative" style={{ background: "var(--toggle-bg)", border: "1px solid var(--toggle-border)" }}>
+                          {themeOptions.map((opt) => (
+                            <button
+                              key={opt.value}
+                              onClick={() => setTheme(opt.value)}
+                              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors"
+                              style={{
+                                color: theme === opt.value ? "var(--text-primary)" : "var(--text-faint)",
+                              }}
+                            >
+                              <opt.icon className="w-3 h-3" />
+                              {opt.label}
+                            </button>
+                          ))}
+                          <motion.div
+                            className="absolute top-0.5 bottom-0.5 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-[6px]"
+                            layoutId="activeThemeDesktop"
+                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                            style={{
+                              width: "calc(33.333% - 2px)",
+                              left: theme === "system" ? "2px" : theme === "light" ? "calc(33.333%)" : "calc(66.666%)",
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Unit System Section */}
                       <div>
-                        <p className="text-xs font-semibold text-white/70 mb-2">
+                        <p className="text-xs font-semibold mb-2" style={{ color: "var(--text-muted)" }}>
                           Unit System
                         </p>
-                        <div className="flex bg-white/[0.03] border border-white/[0.07] rounded-lg p-0.5 relative">
+                        <div className="flex rounded-lg p-0.5 relative" style={{ background: "var(--toggle-bg)", border: "1px solid var(--toggle-border)" }}>
                           <button
                             onClick={() => onUnitChange("byte")}
-                            className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
-                              unit === "byte" ? "text-white" : "text-white/40 hover:text-white/60"
-                            }`}
+                            className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors`}
+                            style={{
+                              color: unit === "byte" ? "var(--text-primary)" : "var(--text-faint)",
+                            }}
                           >
                             Byte (MB/s)
                           </button>
                           <button
                             onClick={() => onUnitChange("bit")}
-                            className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
-                              unit === "bit" ? "text-white" : "text-white/40 hover:text-white/60"
-                            }`}
+                            className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors`}
+                            style={{
+                              color: unit === "bit" ? "var(--text-primary)" : "var(--text-faint)",
+                            }}
                           >
                             Bit (Mbps)
                           </button>
@@ -127,7 +204,8 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition-all"
+            className="md:hidden p-2 rounded-lg transition-all"
+            style={{ color: "var(--nav-link-color)" }}
             aria-label="Toggle menu"
           >
             {isOpen ? <X className="w-5.5 h-5.5" /> : <Menu className="w-5.5 h-5.5" />}
@@ -142,7 +220,11 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-white/[0.06] bg-[#06080d]/90 backdrop-blur-2xl rounded-b-2xl overflow-hidden"
+            className="md:hidden backdrop-blur-2xl rounded-b-2xl overflow-hidden"
+            style={{
+              borderTop: "1px solid var(--mobile-menu-border)",
+              background: "var(--mobile-menu-bg)",
+            }}
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) => (
@@ -150,7 +232,8 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
                   key={link.label}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="block px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition-all duration-200"
+                  className="block px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200"
+                  style={{ color: "var(--nav-link-color)" }}
                 >
                   {link.label}
                 </a>
@@ -160,35 +243,71 @@ export function Navbar({ unit, onUnitChange }: NavbarProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition-all duration-200"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200"
+                style={{ color: "var(--nav-link-color)" }}
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 GitHub
               </a>
 
               {/* Mobile settings section */}
-              <div className="border-t border-white/[0.06] pt-4 mt-3 pb-2">
-                <p className="px-4 text-[9px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+              <div className="pt-4 mt-3 pb-2" style={{ borderTop: "1px solid var(--mobile-menu-border)" }}>
+                <p className="px-4 text-[9px] font-bold tracking-widest uppercase mb-2.5" style={{ color: "var(--text-faint)" }}>
                   Settings
                 </p>
+
+                {/* Theme Toggle - Mobile */}
+                <div className="px-4 mb-4">
+                  <p className="text-xs font-semibold mb-2" style={{ color: "var(--text-muted)" }}>
+                    Theme
+                  </p>
+                  <div className="flex rounded-lg p-0.5 relative" style={{ background: "var(--toggle-bg)", border: "1px solid var(--toggle-border)" }}>
+                    {themeOptions.map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setTheme(opt.value)}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors"
+                        style={{
+                          color: theme === opt.value ? "var(--text-primary)" : "var(--text-faint)",
+                        }}
+                      >
+                        <opt.icon className="w-3 h-3" />
+                        {opt.label}
+                      </button>
+                    ))}
+                    <motion.div
+                      className="absolute top-0.5 bottom-0.5 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-[6px]"
+                      layoutId="activeThemeMobile"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      style={{
+                        width: "calc(33.333% - 2px)",
+                        left: theme === "system" ? "2px" : theme === "light" ? "calc(33.333%)" : "calc(66.666%)",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Unit System - Mobile */}
                 <div className="px-4">
-                  <p className="text-xs font-semibold text-white/70 mb-2">
+                  <p className="text-xs font-semibold mb-2" style={{ color: "var(--text-muted)" }}>
                     Unit System
                   </p>
-                  <div className="flex bg-white/[0.03] border border-white/[0.07] rounded-lg p-0.5 relative">
+                  <div className="flex rounded-lg p-0.5 relative" style={{ background: "var(--toggle-bg)", border: "1px solid var(--toggle-border)" }}>
                     <button
                       onClick={() => onUnitChange("byte")}
-                      className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
-                        unit === "byte" ? "text-white" : "text-white/40"
-                      }`}
+                      className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors`}
+                      style={{
+                        color: unit === "byte" ? "var(--text-primary)" : "var(--text-faint)",
+                      }}
                     >
                       Byte (MB/s)
                     </button>
                     <button
                       onClick={() => onUnitChange("bit")}
-                      className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors ${
-                        unit === "bit" ? "text-white" : "text-white/40"
-                      }`}
+                      className={`flex-1 text-center py-1.5 text-[11px] font-semibold rounded-md relative z-10 transition-colors`}
+                      style={{
+                        color: unit === "bit" ? "var(--text-primary)" : "var(--text-faint)",
+                      }}
                     >
                       Bit (Mbps)
                     </button>

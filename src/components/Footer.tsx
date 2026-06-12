@@ -1,47 +1,54 @@
-import { Gauge } from "lucide-react";
+"use client";
+
+
+import { useTheme } from "@/components/ThemeProvider";
 
 export function Footer() {
+  const { resolvedTheme } = useTheme();
+
   return (
-    <footer className="relative z-10 border-t border-white/[0.06] bg-black/30 backdrop-blur-xl">
+    <footer className="relative z-10 backdrop-blur-xl" style={{ borderTop: "1px solid var(--border-primary)", background: "var(--footer-bg)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500/20 to-cyan-500/20">
-                <Gauge className="w-5 h-5 text-indigo-400" />
-              </div>
-              <span className="text-lg font-bold text-white tracking-tight">
-                Speed<span className="text-indigo-400">Test</span>
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
+                alt="Flynk"
+                style={{ height: 28, width: "auto" }}
+                className="object-contain"
+              />
             </div>
-            <p className="text-white/40 text-sm max-w-md leading-relaxed">
+            <p className="text-sm max-w-md leading-relaxed" style={{ color: "var(--text-muted)" }}>
               A modern internet speed test built with cutting-edge technology.
               Measure your download and upload speeds with precision.
             </p>
-            <p className="text-white/25 text-xs mt-4">
+            <p className="text-xs mt-4" style={{ color: "var(--text-faint)" }}>
               Built with Next.js and deployed on Vercel
             </p>
           </div>
 
           <div>
-            <h4 className="text-white/80 font-semibold text-sm mb-4">Product</h4>
+            <h4 className="font-semibold text-sm mb-4" style={{ color: "var(--text-secondary)" }}>Product</h4>
             <ul className="space-y-2.5">
               <li>
-                <a href="#home" className="text-white/40 hover:text-white/70 text-sm transition-colors">
+                <a href="#home" className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
                   Speed Test
                 </a>
               </li>
               <li>
-                <a href="#features" className="text-white/40 hover:text-white/70 text-sm transition-colors">
+                <a href="#features" className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
                   Features
                 </a>
               </li>
               <li>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/sam-eer31/internet_speed_test"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/40 hover:text-white/70 text-sm transition-colors"
+                  className="text-sm transition-colors"
+                  style={{ color: "var(--text-muted)" }}
                 >
                   GitHub
                 </a>
@@ -50,26 +57,26 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white/80 font-semibold text-sm mb-4">Legal</h4>
+            <h4 className="font-semibold text-sm mb-4" style={{ color: "var(--text-secondary)" }}>Legal</h4>
             <ul className="space-y-2.5">
               <li>
-                <span className="text-white/40 text-sm">About</span>
+                <span className="text-sm" style={{ color: "var(--text-muted)" }}>About</span>
               </li>
               <li>
-                <span className="text-white/40 text-sm">Privacy Policy</span>
+                <span className="text-sm" style={{ color: "var(--text-muted)" }}>Privacy Policy</span>
               </li>
               <li>
-                <span className="text-white/40 text-sm">Terms of Service</span>
+                <span className="text-sm" style={{ color: "var(--text-muted)" }}>Terms of Service</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/[0.06] mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-white/25 text-xs">
-            &copy; {new Date().getFullYear()} SpeedTest. All rights reserved.
+        <div className="mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3" style={{ borderTop: "1px solid var(--border-primary)" }}>
+          <p className="text-xs" style={{ color: "var(--text-faint)" }}>
+            &copy; {new Date().getFullYear()} Flynk. All rights reserved.
           </p>
-          <p className="text-white/25 text-xs">
+          <p className="text-xs" style={{ color: "var(--text-faint)" }}>
             Powered by Next.js &amp; Vercel
           </p>
         </div>

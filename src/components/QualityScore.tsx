@@ -26,7 +26,7 @@ export function QualityScore({ score, rating }: QualityScoreProps) {
     >
       <div className="flex items-center gap-2 mb-4">
         <Shield className="w-5 h-5 animate-pulse" style={{ color }} />
-        <h3 className="text-slate-300 font-bold uppercase tracking-wider text-xs">Connection Quality</h3>
+        <h3 className="font-bold uppercase tracking-wider text-xs" style={{ color: "var(--text-secondary)" }}>Connection Quality</h3>
       </div>
 
       <div className="relative w-32 h-32 mb-4">
@@ -36,7 +36,7 @@ export function QualityScore({ score, rating }: QualityScoreProps) {
             cy="60"
             r="54"
             fill="none"
-            stroke="rgba(255,255,255,0.05)"
+            stroke="var(--ring-bg)"
             strokeWidth="8"
           />
           <motion.circle
@@ -55,10 +55,10 @@ export function QualityScore({ score, rating }: QualityScoreProps) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-bold text-white tabular-nums">
+          <span className="text-3xl font-bold tabular-nums" style={{ color: "var(--text-primary)" }}>
             {Math.round(animatedScore)}
           </span>
-          <span className="text-white/40 text-xs">/ 100</span>
+          <span className="text-xs" style={{ color: "var(--text-muted)" }}>/ 100</span>
         </div>
       </div>
 

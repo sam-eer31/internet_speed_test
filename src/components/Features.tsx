@@ -53,10 +53,10 @@ export function Features() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: "var(--text-heading)" }}>
             Powerful Features
           </h2>
-          <p className="text-white/40 max-w-xl mx-auto">
+          <p className="max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
             Everything you need to understand and monitor your internet connection.
           </p>
         </motion.div>
@@ -74,15 +74,29 @@ export function Features() {
               <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
                 style={{ backgroundColor: `${feature.color}08` }}
               />
-              <div className="relative bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-300 h-full">
+              <div
+                className="relative backdrop-blur-xl rounded-2xl p-6 transition-all duration-300 h-full"
+                style={{
+                  background: "var(--card-bg)",
+                  border: "1px solid var(--card-border)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "var(--card-bg-hover)";
+                  e.currentTarget.style.borderColor = "var(--card-border-hover)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "var(--card-bg)";
+                  e.currentTarget.style.borderColor = "var(--card-border)";
+                }}
+              >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
                   style={{ backgroundColor: `${feature.color}12` }}
                 >
                   <feature.icon className="w-6 h-6" style={{ color: feature.color }} />
                 </div>
-                <h3 className="text-white font-semibold text-lg mb-2">{feature.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="font-semibold text-lg mb-2" style={{ color: "var(--text-heading)" }}>{feature.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{feature.description}</p>
               </div>
             </motion.div>
           ))}

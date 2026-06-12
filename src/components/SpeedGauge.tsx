@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { TestPhase } from "@/types";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface SpeedGaugeProps {
   speed: number;
@@ -100,7 +101,28 @@ export function SpeedGauge({
   unit,
 }: SpeedGaugeProps) {
   const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
   useEffect(() => { setMounted(true); }, []);
+
+  const isDark = resolvedTheme === "dark";
+
+  // ── Theme-aware colors ──────────────────────────────────────────────────
+  const trackOuter = isDark ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.06)";
+  const trackMain  = isDark ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.08)";
+  const trackInner = isDark ? "rgba(255,255,255,0.015)" : "rgba(0,0,0,0.04)";
+  const tickMajor  = isDark ? "rgba(255,255,255,0.22)"  : "rgba(0,0,0,0.2)";
+  const tickMinor  = isDark ? "rgba(255,255,255,0.08)"  : "rgba(0,0,0,0.08)";
+  const tickMajorActive  = isDark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.65)";
+  const tickMinorActive  = isDark ? "rgba(255,255,255,0.28)" : "rgba(0,0,0,0.25)";
+  const tickLabel  = isDark ? "rgba(255,255,255,0.25)"  : "rgba(0,0,0,0.3)";
+  const hubFill    = isDark ? "#06080d" : "#ffffff";
+  const hubStroke  = isDark ? "rgba(255,255,255,0.06)"  : "rgba(0,0,0,0.08)";
+  const hubInnerStroke = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)";
+  const hubGradStart = isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.06)";
+  const hubGradEnd   = isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)";
+  const numberGradBg = isDark
+    ? (c1: string, c2: string) => `linear-gradient(135deg, ${c1}, #ffffff, ${c2})`
+    : (c1: string, c2: string) => `linear-gradient(135deg, ${c1}, #0f172a, ${c2})`;
 
   // ── Geometry ──────────────────────────────────────────────────────────────
   const cx    = size / 2;
@@ -219,9 +241,6 @@ export function SpeedGauge({
       const pct = nPos;
 
       // ── Fill arc via stroke-dashoffset (single continuous path) ──────────
-      // dasharray = total arc length → only one dash covering the whole arc
-      // dashoffset = length of the UNfilled portion (from the end)
-      // This produces a perfectly smooth continuous fill — no segments.
       const dashOffset = TOTAL_LEN * (1 - pct);
       const visible    = pct > 0.002;
 
@@ -234,7 +253,6 @@ export function SpeedGauge({
         glowRef.current.style.visibility       = visible ? "visible" : "hidden";
       }
       if (outerArcRef.current) {
-        // Outer thin arc has a different radius, recalculate its dashoffset
         const outerTotal = arcLen(outerR, TOTAL_DEG);
         outerArcRef.current.style.strokeDashoffset = String(outerTotal * (1 - pct));
         outerArcRef.current.style.visibility       = visible ? "visible" : "hidden";
@@ -262,14 +280,14 @@ export function SpeedGauge({
       // ── Major tick + label colours ────────────────────────────────────────
       for (let i = 0; i < N_MAJOR; i++) {
         const active = majorTicks[i].pctAt <= pct;
-        majorLineRefs.current[i]?.setAttribute("stroke", active ? c2 : "rgba(255,255,255,0.2)");
-        majorTextRefs.current[i]?.setAttribute("fill",   active ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.25)");
+        majorLineRefs.current[i]?.setAttribute("stroke", active ? c2 : tickMajor);
+        majorTextRefs.current[i]?.setAttribute("fill",   active ? tickMajorActive : tickLabel);
       }
 
       // ── Minor tick colours ────────────────────────────────────────────────
       for (let i = 0; i < N_MINOR; i++) {
         const active = minorTicks[i].pctAt <= pct;
-        minorLineRefs.current[i]?.setAttribute("stroke", active ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.07)");
+        minorLineRefs.current[i]?.setAttribute("stroke", active ? tickMinorActive : tickMinor);
       }
 
       // ── Number readout — uses raw speed spring, NOT capped pct ──────────
@@ -277,8 +295,7 @@ export function SpeedGauge({
         const v = numPos.current; // uncapped raw Mbps value
         numberRef.current.textContent =
           v < 10 ? v.toFixed(2) : v < 100 ? v.toFixed(1) : v.toFixed(0);
-        numberRef.current.style.backgroundImage =
-          `linear-gradient(135deg, ${c1}, #ffffff, ${c2})`;
+        numberRef.current.style.backgroundImage = numberGradBg(c1, c2);
         numberRef.current.style.setProperty("-webkit-background-clip", "text");
         numberRef.current.style.setProperty("background-clip", "text");
       }
@@ -289,7 +306,7 @@ export function SpeedGauge({
     rafId.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId.current);
   // Re-run when phase changes so gradient IDs update
-  }, [mounted, phase, cx, cy, mainR, outerR, maxSpeed, TOTAL_LEN]);
+  }, [mounted, phase, cx, cy, mainR, outerR, maxSpeed, TOTAL_LEN, isDark, tickMajor, tickMinor, tickMajorActive, tickMinorActive, tickLabel, numberGradBg, majorTicks, minorTicks]);
 
   // ── Colors for static JSX rendering ──────────────────────────────────────
   const [c1, c2, c3] = getColors(phase);
@@ -339,8 +356,8 @@ export function SpeedGauge({
           </linearGradient>
 
           <linearGradient id="centerHubGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stopColor="rgba(255,255,255,0.12)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
+            <stop offset="0%"   stopColor={hubGradStart} />
+            <stop offset="100%" stopColor={hubGradEnd} />
           </linearGradient>
 
           <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
@@ -371,9 +388,9 @@ export function SpeedGauge({
         </defs>
 
         {/* ── Background tracks (static) ──────────────────────────────────── */}
-        <path d={fullOuterArc} fill="none" stroke="rgba(255,255,255,0.025)"  strokeWidth="1.5"  strokeLinecap="round" />
-        <path d={fullArc}      fill="none" stroke="rgba(255,255,255,0.035)" strokeWidth="12" strokeLinecap="round" />
-        <path d={fullInnerArc} fill="none" stroke="rgba(255,255,255,0.015)"  strokeWidth="1"  strokeLinecap="round" />
+        <path d={fullOuterArc} fill="none" stroke={trackOuter}  strokeWidth="1.5"  strokeLinecap="round" />
+        <path d={fullArc}      fill="none" stroke={trackMain} strokeWidth="12" strokeLinecap="round" />
+        <path d={fullInnerArc} fill="none" stroke={trackInner}  strokeWidth="1"  strokeLinecap="round" />
 
         {/* ── Glow blur layer (wide, blurred — behind the fill) ────────────── */}
         <path
@@ -385,7 +402,7 @@ export function SpeedGauge({
           strokeLinecap="round"
           strokeDasharray={TOTAL_LEN}
           strokeDashoffset={TOTAL_LEN}   /* fully hidden initially */
-          opacity="0.22"
+          opacity={isDark ? "0.22" : "0.15"}
           filter="url(#softGlow)"
           style={{ visibility: "hidden" }}
         />
@@ -425,7 +442,7 @@ export function SpeedGauge({
             ref={el => { minorLineRefs.current[i] = el; }}
             x1={t.inner.x} y1={t.inner.y}
             x2={t.outer.x} y2={t.outer.y}
-            stroke="rgba(255,255,255,0.08)"
+            stroke={tickMinor}
             strokeWidth="0.8"
           />
         ))}
@@ -437,7 +454,7 @@ export function SpeedGauge({
               ref={el => { majorLineRefs.current[i] = el; }}
               x1={t.inner.x} y1={t.inner.y}
               x2={t.outer.x} y2={t.outer.y}
-              stroke="rgba(255,255,255,0.22)"
+              stroke={tickMajor}
               strokeWidth="2"
               strokeLinecap="round"
             />
@@ -445,7 +462,7 @@ export function SpeedGauge({
               ref={el => { majorTextRefs.current[i] = el; }}
               x={t.label.x} y={t.label.y}
               textAnchor="middle" dominantBaseline="middle"
-              fill="rgba(255,255,255,0.25)"
+              fill={tickLabel}
               fontSize="10" fontWeight="600"
               fontFamily="var(--font-inter), system-ui, sans-serif"
               letterSpacing="0.05em"
@@ -476,8 +493,8 @@ export function SpeedGauge({
         />
 
         {/* ── Centre hub ────────────────────────────────────────────────────── */}
-        <circle cx={cx} cy={cy} r="22" fill="#06080d" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-        <circle cx={cx} cy={cy} r="16" fill="url(#centerHubGrad)" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r="22" fill={hubFill} stroke={hubStroke} strokeWidth="1" />
+        <circle cx={cx} cy={cy} r="16" fill="url(#centerHubGrad)" stroke={hubInnerStroke} strokeWidth="1" />
         <circle cx={cx} cy={cy} r="6"  fill={c2} opacity="0.95" filter="drop-shadow(0 0 3px rgba(255,255,255,0.4))" />
         <circle cx={cx} cy={cy} r="2.5"  fill="white" opacity="0.95" />
 
@@ -507,14 +524,14 @@ export function SpeedGauge({
               WebkitTextFillColor: "transparent",
               WebkitBackgroundClip: "text",
               backgroundClip: "text",
-              backgroundImage: `linear-gradient(135deg, ${c1}, #ffffff, ${c2})`,
+              backgroundImage: numberGradBg(c1, c2),
             }}
           >
             0.00
           </span>
         </div>
 
-        <span className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] mt-0.5">
+        <span className="font-bold uppercase tracking-[0.2em] text-[10px] mt-0.5" style={{ color: "var(--text-secondary)" }}>
           {phase === "ping" ? "ms" : (unit === "byte" ? "MB/s" : "Mbps")}
         </span>
       </div>

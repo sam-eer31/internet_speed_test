@@ -63,7 +63,7 @@ export default function Home() {
   const showResults = progress.phase === "complete" && result;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#030307]">
+    <div className="relative min-h-screen overflow-x-hidden" style={{ background: "var(--background)" }}>
       {/* Background Layout */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="bg-grid-overlay" />
@@ -85,14 +85,26 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.06] backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.5)] mb-5 text-[10px] sm:text-xs font-semibold tracking-wider text-indigo-300 uppercase">
+              <div
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md mb-5 text-[10px] sm:text-xs font-semibold tracking-wider text-indigo-400 uppercase"
+                style={{
+                  background: "var(--badge-bg)",
+                  border: "1px solid var(--badge-border)",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
+                }}
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
                 Real-Time Network Diagnostics
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 bg-gradient-to-b from-white via-slate-100 to-slate-400/80 bg-clip-text text-transparent tracking-tight">
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 bg-clip-text text-transparent tracking-tight"
+                style={{
+                  backgroundImage: "linear-gradient(to bottom, var(--text-heading), var(--text-secondary), var(--text-faint))",
+                }}
+              >
                 Internet Speed Test
               </h1>
-              <p className="text-slate-400/60 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg max-w-xl mx-auto leading-relaxed" style={{ color: "var(--text-muted)" }}>
                 Measure your connection with precision. Real-time analytics,
                 beautiful visualizations, and comprehensive quality scoring.
               </p>
@@ -148,7 +160,7 @@ export default function Home() {
                     exit={{ opacity: 0 }}
                   >
                     {progress.ping > 0 && (
-                      <span className="text-white/40">
+                      <span style={{ color: "var(--text-muted)" }}>
                         Ping:{" "}
                         <span className="text-purple-400 font-semibold tabular-nums">
                           {(progress.ping ?? 0).toFixed(1)} ms
@@ -156,7 +168,7 @@ export default function Home() {
                       </span>
                     )}
                     {progress.download > 0 && (
-                      <span className="text-white/40">
+                      <span style={{ color: "var(--text-muted)" }}>
                         Download:{" "}
                         <span className="text-blue-400 tabular-nums">
                           {progress.phase === "download" ? (
@@ -169,7 +181,7 @@ export default function Home() {
                       </span>
                     )}
                     {progress.upload > 0 && (
-                      <span className="text-white/40">
+                      <span style={{ color: "var(--text-muted)" }}>
                         Upload:{" "}
                         <span className="text-emerald-400 tabular-nums">
                           {progress.phase === "upload" ? (
@@ -190,7 +202,11 @@ export default function Home() {
                 {!isRunning ? (
                   <motion.button
                     onClick={startTest}
-                    className="group relative px-8 py-4 rounded-2xl font-bold text-white overflow-hidden shadow-[0_4px_25px_rgba(0,0,0,0.5)] transition-all duration-300 hover:shadow-[0_4px_30px_rgba(99,102,241,0.22)] border border-white/[0.08]"
+                    className="group relative px-8 py-4 rounded-2xl font-bold text-white overflow-hidden transition-all duration-300 hover:shadow-[0_4px_30px_rgba(99,102,241,0.22)]"
+                    style={{
+                      boxShadow: "var(--cta-shadow)",
+                      border: "1px solid var(--cta-border)",
+                    }}
                     whileHover={{ scale: 1.02, y: -1 }}
                     whileTap={{ scale: 0.98 }}
                     aria-label="Start speed test"
@@ -318,10 +334,10 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: "var(--text-heading)" }}>
                 Test History
               </h2>
-              <p className="text-white/40">
+              <p style={{ color: "var(--text-muted)" }}>
                 Your recent speed tests, stored locally on your device.
               </p>
             </motion.div>

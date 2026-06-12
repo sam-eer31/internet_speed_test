@@ -4,14 +4,285 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-:root {
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK THEME (default)
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
   --background: #030307;
+  --background-secondary: #050510;
   --foreground: #f8fafc;
+
+  /* Card / Glass */
+  --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --glass-border-hover: rgba(255, 255, 255, 0.09);
+  --glass-shadow-hover: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-bg-hover: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-border-hover: rgba(255, 255, 255, 0.1);
+
+  /* Text */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --text-faint: rgba(255, 255, 255, 0.25);
+  --text-heading: #ffffff;
+
+  /* Borders */
+  --border-primary: rgba(255, 255, 255, 0.06);
+  --border-secondary: rgba(255, 255, 255, 0.03);
+
+  /* Navbar */
+  --nav-bg: rgba(6, 8, 13, 0.65);
+  --nav-border: rgba(255, 255, 255, 0.06);
+  --nav-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --nav-link-color: #94a3b8;
+  --nav-link-hover-bg: rgba(255, 255, 255, 0.04);
+
+  /* Settings dropdown */
+  --dropdown-bg: rgba(9, 12, 21, 0.95);
+  --dropdown-border: rgba(255, 255, 255, 0.1);
+  --dropdown-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+
+  /* Buttons */
+  --btn-secondary-bg: rgba(255, 255, 255, 0.03);
+  --btn-secondary-bg-hover: rgba(255, 255, 255, 0.06);
+  --btn-secondary-border: rgba(255, 255, 255, 0.07);
+  --btn-secondary-text: rgba(255, 255, 255, 0.4);
+  --btn-secondary-text-hover: rgba(255, 255, 255, 0.6);
+
+  /* Toggle */
+  --toggle-bg: rgba(255, 255, 255, 0.03);
+  --toggle-border: rgba(255, 255, 255, 0.07);
+
+  /* Grid overlay */
+  --grid-line-color: rgba(255, 255, 255, 0.02);
+
+  /* Glow blobs */
+  --glow-1-color: rgba(99, 102, 241, 0.12);
+  --glow-2-color: rgba(6, 182, 212, 0.08);
+  --glow-3-color: rgba(16, 185, 129, 0.06);
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.15);
+
+  /* Selection */
+  --selection-bg: rgba(99, 102, 241, 0.25);
+  --selection-color: #ffffff;
+
+  /* Shimmer */
+  --shimmer-1: rgba(255, 255, 255, 0.01);
+  --shimmer-2: rgba(255, 255, 255, 0.05);
+
+  /* Particles */
+  --particle-color: rgba(255, 255, 255, 0.04);
+
+  /* Gauge */
+  --gauge-hub-fill: #06080d;
+  --gauge-hub-stroke: rgba(255, 255, 255, 0.06);
+  --gauge-hub-inner-stroke: rgba(255, 255, 255, 0.04);
+  --gauge-hub-gradient-start: rgba(255, 255, 255, 0.12);
+  --gauge-hub-gradient-end: rgba(255, 255, 255, 0.02);
+  --gauge-track-outer: rgba(255, 255, 255, 0.025);
+  --gauge-track-main: rgba(255, 255, 255, 0.035);
+  --gauge-track-inner: rgba(255, 255, 255, 0.015);
+  --gauge-tick-major: rgba(255, 255, 255, 0.22);
+  --gauge-tick-minor: rgba(255, 255, 255, 0.08);
+  --gauge-tick-major-active: rgba(255, 255, 255, 0.75);
+  --gauge-tick-minor-active: rgba(255, 255, 255, 0.28);
+  --gauge-tick-label: rgba(255, 255, 255, 0.25);
+
+  /* Charts */
+  --chart-grid: rgba(255, 255, 255, 0.03);
+  --chart-axis: rgba(255, 255, 255, 0.15);
+  --chart-tooltip-bg: rgba(6, 8, 13, 0.95);
+  --chart-tooltip-border: rgba(255, 255, 255, 0.08);
+  --chart-tooltip-text: #f8fafc;
+  --chart-legend-text: rgba(255, 255, 255, 0.6);
+
+  /* Quality score ring */
+  --ring-bg: rgba(255, 255, 255, 0.05);
+
+  /* ShareCard */
+  --share-card-from: #0a0a1a;
+  --share-card-to: #111133;
+  --share-card-border: rgba(255, 255, 255, 0.1);
+  --share-card-cell-bg: rgba(255, 255, 255, 0.04);
+
+  /* Footer */
+  --footer-bg: rgba(0, 0, 0, 0.3);
+
+  /* Icon containers */
+  --icon-container-bg: rgba(99, 102, 241, 0.1);
+  --icon-container-border: rgba(99, 102, 241, 0.15);
+
+  /* Badge */
+  --badge-bg: rgba(255, 255, 255, 0.02);
+  --badge-border: rgba(255, 255, 255, 0.06);
+
+  /* CTA button */
+  --cta-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+  --cta-border: rgba(255, 255, 255, 0.08);
+
+  /* Table */
+  --table-header-border: rgba(255, 255, 255, 0.06);
+  --table-row-border: rgba(255, 255, 255, 0.03);
+  --table-row-hover: rgba(255, 255, 255, 0.02);
+
+  /* Mobile menu */
+  --mobile-menu-bg: rgba(6, 8, 13, 0.9);
+  --mobile-menu-border: rgba(255, 255, 255, 0.06);
+
+  /* Progress bar */
+  --progress-track: rgba(255, 255, 255, 0.06);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT THEME
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  --background: #f0f4f8;
+  --background-secondary: #e8eef4;
+  --foreground: #0f172a;
+
+  /* Card / Glass */
+  --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.7) 100%);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.06);
+  --glass-border-hover: rgba(0, 0, 0, 0.12);
+  --glass-shadow-hover: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-bg-hover: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(0, 0, 0, 0.06);
+  --card-border-hover: rgba(0, 0, 0, 0.1);
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: rgba(15, 23, 42, 0.55);
+  --text-faint: rgba(15, 23, 42, 0.35);
+  --text-heading: #0f172a;
+
+  /* Borders */
+  --border-primary: rgba(0, 0, 0, 0.08);
+  --border-secondary: rgba(0, 0, 0, 0.04);
+
+  /* Navbar */
+  --nav-bg: rgba(255, 255, 255, 0.75);
+  --nav-border: rgba(0, 0, 0, 0.06);
+  --nav-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --nav-link-color: #475569;
+  --nav-link-hover-bg: rgba(0, 0, 0, 0.04);
+
+  /* Settings dropdown */
+  --dropdown-bg: rgba(255, 255, 255, 0.97);
+  --dropdown-border: rgba(0, 0, 0, 0.1);
+  --dropdown-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+
+  /* Buttons */
+  --btn-secondary-bg: rgba(0, 0, 0, 0.03);
+  --btn-secondary-bg-hover: rgba(0, 0, 0, 0.06);
+  --btn-secondary-border: rgba(0, 0, 0, 0.08);
+  --btn-secondary-text: rgba(15, 23, 42, 0.5);
+  --btn-secondary-text-hover: rgba(15, 23, 42, 0.75);
+
+  /* Toggle */
+  --toggle-bg: rgba(0, 0, 0, 0.04);
+  --toggle-border: rgba(0, 0, 0, 0.08);
+
+  /* Grid overlay */
+  --grid-line-color: rgba(0, 0, 0, 0.03);
+
+  /* Glow blobs */
+  --glow-1-color: rgba(99, 102, 241, 0.08);
+  --glow-2-color: rgba(6, 182, 212, 0.05);
+  --glow-3-color: rgba(16, 185, 129, 0.04);
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.2);
+
+  /* Selection */
+  --selection-bg: rgba(99, 102, 241, 0.2);
+  --selection-color: #0f172a;
+
+  /* Shimmer */
+  --shimmer-1: rgba(0, 0, 0, 0.02);
+  --shimmer-2: rgba(0, 0, 0, 0.06);
+
+  /* Particles */
+  --particle-color: rgba(99, 102, 241, 0.06);
+
+  /* Gauge */
+  --gauge-hub-fill: #ffffff;
+  --gauge-hub-stroke: rgba(0, 0, 0, 0.08);
+  --gauge-hub-inner-stroke: rgba(0, 0, 0, 0.05);
+  --gauge-hub-gradient-start: rgba(0, 0, 0, 0.06);
+  --gauge-hub-gradient-end: rgba(0, 0, 0, 0.02);
+  --gauge-track-outer: rgba(0, 0, 0, 0.06);
+  --gauge-track-main: rgba(0, 0, 0, 0.08);
+  --gauge-track-inner: rgba(0, 0, 0, 0.04);
+  --gauge-tick-major: rgba(0, 0, 0, 0.2);
+  --gauge-tick-minor: rgba(0, 0, 0, 0.08);
+  --gauge-tick-major-active: rgba(0, 0, 0, 0.65);
+  --gauge-tick-minor-active: rgba(0, 0, 0, 0.25);
+  --gauge-tick-label: rgba(0, 0, 0, 0.3);
+
+  /* Charts */
+  --chart-grid: rgba(0, 0, 0, 0.04);
+  --chart-axis: rgba(0, 0, 0, 0.15);
+  --chart-tooltip-bg: rgba(255, 255, 255, 0.97);
+  --chart-tooltip-border: rgba(0, 0, 0, 0.08);
+  --chart-tooltip-text: #0f172a;
+  --chart-legend-text: rgba(15, 23, 42, 0.6);
+
+  /* Quality score ring */
+  --ring-bg: rgba(0, 0, 0, 0.06);
+
+  /* ShareCard */
+  --share-card-from: #f0f4f8;
+  --share-card-to: #e2e8f0;
+  --share-card-border: rgba(0, 0, 0, 0.08);
+  --share-card-cell-bg: rgba(0, 0, 0, 0.03);
+
+  /* Footer */
+  --footer-bg: rgba(255, 255, 255, 0.5);
+
+  /* Icon containers */
+  --icon-container-bg: rgba(99, 102, 241, 0.08);
+  --icon-container-border: rgba(99, 102, 241, 0.12);
+
+  /* Badge */
+  --badge-bg: rgba(0, 0, 0, 0.02);
+  --badge-border: rgba(0, 0, 0, 0.06);
+
+  /* CTA button */
+  --cta-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+  --cta-border: rgba(99, 102, 241, 0.2);
+
+  /* Table */
+  --table-header-border: rgba(0, 0, 0, 0.08);
+  --table-row-border: rgba(0, 0, 0, 0.04);
+  --table-row-hover: rgba(0, 0, 0, 0.02);
+
+  /* Mobile menu */
+  --mobile-menu-bg: rgba(255, 255, 255, 0.95);
+  --mobile-menu-border: rgba(0, 0, 0, 0.06);
+
+  /* Progress bar */
+  --progress-track: rgba(0, 0, 0, 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -24,17 +295,17 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--scrollbar-thumb-hover);
 }
 
 ::selection {
-  background: rgba(99, 102, 241, 0.25);
-  color: #ffffff;
+  background: var(--selection-bg);
+  color: var(--selection-color);
 }
 
 html {
@@ -46,6 +317,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Premium Grid Backdrop with Radial Masking */
@@ -54,8 +326,8 @@ body {
   inset: 0;
   background-size: 50px 50px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
   mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
   -webkit-mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
   pointer-events: none;
@@ -63,29 +335,30 @@ body {
 
 /* Luxury Ambient Glow Blobs */
 .glow-blob-1 {
-  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle at center, var(--glow-1-color) 0%, transparent 70%);
 }
 
 .glow-blob-2 {
-  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.08) 0%, transparent 65%);
+  background: radial-gradient(circle at center, var(--glow-2-color) 0%, transparent 65%);
 }
 
 .glow-blob-3 {
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.06) 0%, transparent 60%);
+  background: radial-gradient(circle at center, var(--glow-3-color) 0%, transparent 60%);
 }
 
 /* Premium Glass Panel */
 .glass-panel {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.09);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
 }
 
 /* Shimmer animation for loading states */
@@ -101,9 +374,9 @@ body {
 .shimmer {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.01) 25%,
-    rgba(255, 255, 255, 0.05) 50%,
-    rgba(255, 255, 255, 0.01) 75%
+    var(--shimmer-1) 25%,
+    var(--shimmer-2) 50%,
+    var(--shimmer-1) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 2.5s infinite linear;

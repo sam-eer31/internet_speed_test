@@ -37,12 +37,13 @@ export function Particles() {
       {particles.map((p) => (
         <motion.div
           key={p.id}
-          className="absolute rounded-full bg-white/[0.04]"
+          className="absolute rounded-full"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
+            background: "var(--particle-color)",
           }}
           animate={{
             y: [0, -80, 0],

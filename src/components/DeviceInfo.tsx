@@ -30,16 +30,16 @@ export function DeviceInfo() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <h3 className="text-slate-300 font-bold uppercase tracking-wider text-xs mb-6">Device & Network</h3>
+      <h3 className="font-bold uppercase tracking-wider text-xs mb-6" style={{ color: "var(--text-secondary)" }}>Device & Network</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {items.map((item) => (
           <div key={item.label} className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/15">
+            <div className="p-2 rounded-lg" style={{ background: "var(--icon-container-bg)", border: "1px solid var(--icon-container-border)" }}>
               <item.icon className="w-4 h-4 text-indigo-400" />
             </div>
             <div>
-              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">{item.label}</p>
-              <p className="text-slate-200 text-sm font-semibold truncate max-w-[140px] mt-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>{item.label}</p>
+              <p className="text-sm font-semibold truncate max-w-[140px] mt-0.5" style={{ color: "var(--text-primary)" }}>
                 {item.value}
               </p>
             </div>

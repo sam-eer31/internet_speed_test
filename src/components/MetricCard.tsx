@@ -41,22 +41,22 @@ export function MetricCard({
       <div className="relative glass-panel rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
         <div className="flex items-center gap-3 mb-4">
           <div
-            className="p-2.5 rounded-xl border border-white/[0.04]"
-            style={{ backgroundColor: `${color}0f` }}
+            className="p-2.5 rounded-xl"
+            style={{ backgroundColor: `${color}0f`, border: `1px solid var(--border-secondary)` }}
           >
             <Icon className="w-5 h-5" style={{ color }} />
           </div>
-          <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">{label}</span>
+          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>{label}</span>
         </div>
 
         <div className="flex items-baseline gap-2 mb-1.5">
-          <span className="text-3xl font-extrabold text-slate-100 tabular-nums tracking-tight">
+          <span className="text-3xl font-extrabold tabular-nums tracking-tight" style={{ color: "var(--text-primary)" }}>
             {animatedValue.toFixed(decimals)}
           </span>
-          <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">{unit}</span>
+          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>{unit}</span>
         </div>
 
-        <p className="text-slate-500 text-xs font-normal leading-relaxed">{description}</p>
+        <p className="text-xs font-normal leading-relaxed" style={{ color: "var(--text-muted)" }}>{description}</p>
       </div>
     </motion.div>
   );

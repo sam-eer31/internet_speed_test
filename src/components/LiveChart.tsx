@@ -14,6 +14,7 @@ import {
 } from "recharts";
 
 import { SpeedTestResult } from "@/types";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface LiveChartProps {
   history: SpeedTestResult[];
@@ -22,6 +23,7 @@ interface LiveChartProps {
 export function LiveChart({ history }: LiveChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const el = containerRef.current;
@@ -58,6 +60,8 @@ export function LiveChart({ history }: LiveChartProps) {
 
   if (data.length < 2) return null;
 
+  const isDark = resolvedTheme === "dark";
+
   return (
     <motion.div
       className="glass-panel rounded-2xl p-6"
@@ -65,7 +69,7 @@ export function LiveChart({ history }: LiveChartProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h3 className="text-slate-300 font-bold uppercase tracking-wider text-xs mb-6">
+      <h3 className="font-bold uppercase tracking-wider text-xs mb-6" style={{ color: "var(--text-secondary)" }}>
         Speed Over Time (Mbps)
       </h3>
       <div ref={containerRef} className="h-64 w-full">
@@ -74,19 +78,19 @@ export function LiveChart({ history }: LiveChartProps) {
             <LineChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
               <CartesianGrid
                 strokeDasharray="4 4"
-                stroke="rgba(255,255,255,0.03)"
+                stroke={isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.04)"}
                 vertical={false}
               />
               <XAxis
                 dataKey="name"
-                stroke="rgba(255,255,255,0.15)"
+                stroke={isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)"}
                 fontSize={10}
                 fontWeight="500"
                 tickLine={false}
                 dy={10}
               />
               <YAxis
-                stroke="rgba(255,255,255,0.15)"
+                stroke={isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)"}
                 fontSize={10}
                 fontWeight="500"
                 tickLine={false}
@@ -94,12 +98,12 @@ export function LiveChart({ history }: LiveChartProps) {
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "rgba(6,8,13,0.95)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  backgroundColor: isDark ? "rgba(6,8,13,0.95)" : "rgba(255,255,255,0.97)",
+                  border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"}`,
                   borderRadius: "12px",
-                  color: "#f8fafc",
+                  color: isDark ? "#f8fafc" : "#0f172a",
                   fontSize: 11,
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
+                  boxShadow: isDark ? "0 10px 25px rgba(0,0,0,0.5)" : "0 10px 25px rgba(0,0,0,0.08)",
                 }}
               />
               <Legend
@@ -108,7 +112,7 @@ export function LiveChart({ history }: LiveChartProps) {
                 iconType="circle"
                 iconSize={8}
                 wrapperStyle={{
-                  color: "rgba(255,255,255,0.6)",
+                  color: isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.6)",
                   fontSize: 11,
                   fontWeight: "600",
                   textTransform: "uppercase",

@@ -6,6 +6,7 @@ import { toPng } from "html-to-image";
 import { Download, Share2 } from "lucide-react";
 import { SpeedTestResult } from "@/types";
 import { getQualityColor } from "@/lib/utils";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface ShareCardProps {
   result: SpeedTestResult;
@@ -14,6 +15,7 @@ interface ShareCardProps {
 
 export function ShareCard({ result, unit }: ShareCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
 
   const downloadVal = unit === "byte" ? result.download / 8 : result.download;
   const uploadVal = unit === "byte" ? result.upload / 8 : result.upload;
@@ -25,7 +27,7 @@ export function ShareCard({ result, unit }: ShareCardProps) {
       const dataUrl = await toPng(cardRef.current, {
         quality: 0.95,
         pixelRatio: 2,
-        backgroundColor: "#0a0a1a",
+        backgroundColor: resolvedTheme === "dark" ? "#0a0a1a" : "#f0f4f8",
       });
       const link = document.createElement("a");
       link.download = `speedtest-${Date.now()}.png`;
@@ -34,7 +36,7 @@ export function ShareCard({ result, unit }: ShareCardProps) {
     } catch (err) {
       console.error("Failed to export image:", err);
     }
-  }, []);
+  }, [resolvedTheme]);
 
   const handleShare = useCallback(async () => {
     const text = `My Speed Test Results:\nDownload: ${downloadVal.toFixed(2)} ${unitStr}\nUpload: ${uploadVal.toFixed(2)} ${unitStr}\nPing: ${(result.ping ?? 0).toFixed(1)} ms\nJitter: ${(result.jitter ?? 0).toFixed(1)} ms\nQuality: ${result.qualityRating} (${result.qualityScore}/100)`;
@@ -61,55 +63,59 @@ export function ShareCard({ result, unit }: ShareCardProps) {
     >
       <div
         ref={cardRef}
-        className="w-full max-w-md bg-gradient-to-br from-[#0a0a1a] to-[#111133] rounded-2xl p-6 border border-white/10"
+        className="w-full max-w-md rounded-2xl p-6"
+        style={{
+          background: `linear-gradient(135deg, var(--share-card-from), var(--share-card-to))`,
+          border: `1px solid var(--share-card-border)`,
+        }}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center">
-              <span className="text-white font-bold text-xs">ST</span>
+              <span className="text-white font-bold text-xs">F</span>
             </div>
-            <span className="text-white font-bold">SpeedTest</span>
+            <span className="font-bold" style={{ color: "var(--text-primary)" }}>Flynk</span>
           </div>
-          <span className="text-white/40 text-xs">
+          <span className="text-xs" style={{ color: "var(--text-muted)" }}>
             {new Date(result.timestamp).toLocaleDateString()}
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-white/40 text-xs mb-1">Download</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--share-card-cell-bg)" }}>
+            <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Download</p>
             <p className="text-2xl font-bold text-blue-400">
               {downloadVal.toFixed(2)}
             </p>
-            <p className="text-white/30 text-xs">{unitStr}</p>
+            <p className="text-xs" style={{ color: "var(--text-faint)" }}>{unitStr}</p>
           </div>
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-white/40 text-xs mb-1">Upload</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--share-card-cell-bg)" }}>
+            <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Upload</p>
             <p className="text-2xl font-bold text-emerald-400">
               {uploadVal.toFixed(2)}
             </p>
-            <p className="text-white/30 text-xs">{unitStr}</p>
+            <p className="text-xs" style={{ color: "var(--text-faint)" }}>{unitStr}</p>
           </div>
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-white/40 text-xs mb-1">Ping</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--share-card-cell-bg)" }}>
+            <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Ping</p>
             <p className="text-2xl font-bold text-purple-400">
               {(result.ping ?? 0).toFixed(1)}
             </p>
-            <p className="text-white/30 text-xs">ms</p>
+            <p className="text-xs" style={{ color: "var(--text-faint)" }}>ms</p>
           </div>
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-white/40 text-xs mb-1">Jitter</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--share-card-cell-bg)" }}>
+            <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Jitter</p>
             <p className="text-2xl font-bold text-amber-400">
               {(result.jitter ?? 0).toFixed(1)}
             </p>
-            <p className="text-white/30 text-xs">ms</p>
+            <p className="text-xs" style={{ color: "var(--text-faint)" }}>ms</p>
           </div>
 
         </div>
 
-        <div className="flex items-center justify-between bg-white/[0.04] rounded-xl p-4">
+        <div className="flex items-center justify-between rounded-xl p-4" style={{ background: "var(--share-card-cell-bg)" }}>
           <div>
-            <p className="text-white/40 text-xs">Quality Score</p>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Quality Score</p>
             <p className="text-xl font-bold" style={{ color }}>
               {result.qualityScore}/100
             </p>
@@ -126,7 +132,12 @@ export function ShareCard({ result, unit }: ShareCardProps) {
       <div className="flex gap-3">
         <button
           onClick={handleDownload}
-          className="flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] rounded-xl text-white/80 text-sm transition-all hover:border-white/[0.15]"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm transition-all"
+          style={{
+            background: "var(--btn-secondary-bg)",
+            border: "1px solid var(--btn-secondary-border)",
+            color: "var(--text-secondary)",
+          }}
           aria-label="Download results as PNG"
         >
           <Download className="w-4 h-4" />
@@ -134,7 +145,7 @@ export function ShareCard({ result, unit }: ShareCardProps) {
         </button>
         <button
           onClick={handleShare}
-          className="flex items-center gap-2 px-5 py-2.5 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/20 rounded-xl text-indigo-300 text-sm transition-all"
+          className="flex items-center gap-2 px-5 py-2.5 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/20 rounded-xl text-indigo-400 text-sm transition-all"
           aria-label="Share results"
         >
           <Share2 className="w-4 h-4" />

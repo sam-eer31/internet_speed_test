@@ -31,7 +31,6 @@ export function ProgressSteps({ phase, progress }: ProgressStepsProps) {
         const phaseIdx = phaseOrder.indexOf(p.key);
         const isComplete = currentIdx > phaseIdx;
         const isActive = phase === p.key;
-        const isPending = currentIdx < phaseIdx;
 
         return (
           <div key={p.key} className="flex items-center gap-2 sm:gap-3">
@@ -49,23 +48,24 @@ export function ProgressSteps({ phase, progress }: ProgressStepsProps) {
                   <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
                 </div>
               ) : (
-                <Circle className="w-5 h-5 text-white/20" />
+                <Circle className="w-5 h-5" style={{ color: "var(--text-faint)" }} />
               )}
               <span
-                className={`text-sm font-medium ${
-                  isComplete
-                    ? "text-emerald-400"
+                className="text-sm font-medium"
+                style={{
+                  color: isComplete
+                    ? "#34d399"
                     : isActive
-                    ? "text-white"
-                    : "text-white/30"
-                }`}
+                    ? "var(--text-primary)"
+                    : "var(--text-faint)",
+                }}
               >
                 {p.label}
               </span>
             </div>
 
             {isActive && (
-              <div className="hidden sm:block w-20 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="hidden sm:block w-20 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--progress-track)" }}>
                 <motion.div
                   className="h-full bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full"
                   initial={{ width: 0 }}
@@ -77,9 +77,10 @@ export function ProgressSteps({ phase, progress }: ProgressStepsProps) {
 
             {idx < phases.length - 1 && (
               <div
-                className={`w-8 h-px ${
-                  isComplete ? "bg-emerald-400/40" : "bg-white/10"
-                }`}
+                className="w-8 h-px"
+                style={{
+                  background: isComplete ? "rgba(52, 211, 153, 0.4)" : "var(--border-primary)",
+                }}
               />
             )}
           </div>

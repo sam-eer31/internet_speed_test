@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -8,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SpeedTest - Modern Internet Speed Test",
+  title: "Flynk - Internet Speed Test",
   description:
-    "Test your internet speed with precision. Measure download and upload speeds with our beautiful, real-time speed test powered by Next.js.",
+    "Test your internet speed with precision. Measure download and upload speeds with our beautiful, real-time speed test powered by Flynk.",
   keywords: [
     "speed test",
     "internet speed",
@@ -19,19 +20,20 @@ export const metadata: Metadata = {
     "upload speed",
     "network speed",
     "internet test",
+    "flynk",
   ],
-  authors: [{ name: "SpeedTest" }],
+  authors: [{ name: "Flynk" }],
   openGraph: {
-    title: "SpeedTest - Modern Internet Speed Test",
+    title: "Flynk - Internet Speed Test",
     description:
       "Test your internet speed with precision. Beautiful real-time gauge, live charts, and comprehensive quality scoring.",
     type: "website",
     locale: "en_US",
-    siteName: "SpeedTest",
+    siteName: "Flynk",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SpeedTest - Modern Internet Speed Test",
+    title: "Flynk - Internet Speed Test",
     description:
       "Test your internet speed with precision. Beautiful real-time gauge, live charts, and comprehensive quality scoring.",
   },
@@ -51,9 +53,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#050510] text-white font-[var(--font-inter)]">
-        {children}
+    <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Prevent FOUC: apply data-theme before paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("speedtest-theme");var r=t==="light"?"light":t==="dark"?"dark":window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",r)}catch(e){document.documentElement.setAttribute("data-theme","dark")}})()`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col font-[var(--font-inter)]" style={{ background: "var(--background)", color: "var(--foreground)" }}>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

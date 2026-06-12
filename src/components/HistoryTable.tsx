@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Clock, Trash2, Download, ArrowDownCircle, ArrowUpCircle, Activity } from "lucide-react";
 import { SpeedTestResult } from "@/types";
-import { clearHistory, getQualityColor } from "@/lib/utils";
+import { getQualityColor } from "@/lib/utils";
 
 interface HistoryTableProps {
   history: SpeedTestResult[];
@@ -20,9 +20,9 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Clock className="w-8 h-8 text-slate-500 mx-auto mb-3" />
-        <p className="text-slate-300 font-semibold text-sm">No test history yet</p>
-        <p className="text-slate-500 text-xs mt-1">Run a speed test to see results here</p>
+        <Clock className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-muted)" }} />
+        <p className="font-semibold text-sm" style={{ color: "var(--text-secondary)" }}>No test history yet</p>
+        <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>Run a speed test to see results here</p>
       </motion.div>
     );
   }
@@ -58,15 +58,20 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
     >
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+          <div className="p-1.5 rounded-lg" style={{ background: "var(--icon-container-bg)", border: "1px solid var(--icon-container-border)" }}>
             <Clock className="w-4 h-4 text-indigo-400" />
           </div>
-          <h3 className="text-slate-300 font-bold uppercase tracking-wider text-xs">Test History</h3>
+          <h3 className="font-bold uppercase tracking-wider text-xs" style={{ color: "var(--text-secondary)" }}>Test History</h3>
         </div>
         <div className="flex gap-2">
           <button
             onClick={handleExport}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] rounded-lg transition-all duration-200 font-medium cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all duration-200 font-medium cursor-pointer"
+            style={{
+              color: "var(--text-secondary)",
+              background: "var(--btn-secondary-bg)",
+              border: "1px solid var(--btn-secondary-border)",
+            }}
             aria-label="Download results as CSV"
           >
             <Download className="w-3.5 h-3.5" />
@@ -86,32 +91,41 @@ export function HistoryTable({ history, onClear, unit }: HistoryTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full" role="table">
           <thead>
-            <tr className="border-b border-white/[0.06]">
-              <th className="text-left text-xs text-white/40 font-medium pb-3 pr-4">Date</th>
-              <th className="text-right text-xs text-white/40 font-medium pb-3 px-3">
+            <tr style={{ borderBottom: "1px solid var(--table-header-border)" }}>
+              <th className="text-left text-xs font-medium pb-3 pr-4" style={{ color: "var(--text-muted)" }}>Date</th>
+              <th className="text-right text-xs font-medium pb-3 px-3" style={{ color: "var(--text-muted)" }}>
                 <Activity className="w-3.5 h-3.5 inline mr-1" /> Ping
               </th>
-              <th className="text-right text-xs text-white/40 font-medium pb-3 px-3">
+              <th className="text-right text-xs font-medium pb-3 px-3" style={{ color: "var(--text-muted)" }}>
                 <ArrowDownCircle className="w-3.5 h-3.5 inline mr-1" /> Down ({unit === "byte" ? "MB/s" : "Mbps"})
               </th>
-              <th className="text-right text-xs text-white/40 font-medium pb-3 px-3">
+              <th className="text-right text-xs font-medium pb-3 px-3" style={{ color: "var(--text-muted)" }}>
                 <ArrowUpCircle className="w-3.5 h-3.5 inline mr-1" /> Up ({unit === "byte" ? "MB/s" : "Mbps"})
               </th>
-              <th className="text-right text-xs text-white/40 font-medium pb-3 px-3">Score</th>
+              <th className="text-right text-xs font-medium pb-3 px-3" style={{ color: "var(--text-muted)" }}>Score</th>
             </tr>
           </thead>
           <tbody>
             {history.slice(0, 10).map((result, idx) => (
               <motion.tr
                 key={result.id}
-                className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors"
+                className="transition-colors"
+                style={{
+                  borderBottom: "1px solid var(--table-row-border)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "var(--table-row-hover)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: idx * 0.05 }}
               >
-                <td className="py-3 pr-4 text-sm text-white/60">
+                <td className="py-3 pr-4 text-sm" style={{ color: "var(--text-muted)" }}>
                   {new Date(result.timestamp).toLocaleDateString()}{" "}
-                  <span className="text-white/30">
+                  <span style={{ color: "var(--text-faint)" }}>
                     {new Date(result.timestamp).toLocaleTimeString()}
                   </span>
                 </td>
