@@ -25,19 +25,3 @@ export interface TestProgress {
   progress: number;
   speedResetKey: number;
 }
-
-export interface DeviceInfo {
-  browser: string;
-  platform: string;
-  screenResolution: string;
-  deviceMemory: string;
-  cpuCores: string;
-  userAgent: string;
-  connectionType: string;
-}
-
-export interface NetworkInfo {
-  ip: string;
-  connectionType: string;
-  userAgent: string;
-}

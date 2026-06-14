@@ -1,5 +1,4 @@
 import { QualityRating, SpeedTestResult } from "@/types";
-import { UAParser } from "ua-parser-js";
 
 export function calculateQualityScore(
   ping: number,
@@ -81,26 +80,3 @@ export function clearHistory(): void {
 }
 
 
-
-export function detectDeviceInfo() {
-  if (typeof navigator === "undefined" || typeof window === "undefined") {
-    return {
-      browser: "Unknown",
-      os: "Unknown",
-      screenResolution: "Unknown",
-    };
-  }
-
-  const parser = new UAParser(navigator.userAgent);
-  const browser = parser.getBrowser();
-  const os = parser.getOS();
-
-  const browserStr = browser.name ? `${browser.name} ${browser.version?.split('.')[0] || ''}`.trim() : "Unknown Browser";
-  const osStr = os.name ? `${os.name} ${os.version || ''}`.trim() : "Unknown OS";
-  
-  return {
-    browser: browserStr,
-    os: osStr,
-    screenResolution: `${window.screen.width} × ${window.screen.height}`,
-  };
-}

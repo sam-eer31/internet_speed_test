@@ -20,7 +20,6 @@ import { MetricCard } from "@/components/MetricCard";
 import { QualityScore } from "@/components/QualityScore";
 import { LiveChart } from "@/components/LiveChart";
 import { NetworkUseCases } from "@/components/NetworkUseCases";
-import { DeviceInfo } from "@/components/DeviceInfo";
 import { HistoryTable } from "@/components/HistoryTable";
 import { ShareCard } from "@/components/ShareCard";
 import { Features } from "@/components/Features";
@@ -324,9 +323,6 @@ export default function Home() {
 
                   {/* Share Card */}
                   <ShareCard result={result} unit={unit} />
-
-                  {/* Device Info */}
-                  <DeviceInfo />
                 </motion.div>
               </div>
             </section>

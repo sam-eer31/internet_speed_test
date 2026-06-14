@@ -12,7 +12,6 @@
   <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-00b8f9?style=flat&logo=react&logoColor=white" alt="React" />
   <img src="https://img.shields.io/badge/Tailwind-0045e0?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <br />
   <a href="https://github.com/sam-eer31/internet_speed_test/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/sam-eer31/internet_speed_test?style=flat&color=00b8f9" alt="License" />
   </a>
@@ -49,7 +48,6 @@ Run your speed test instantly: **[flynk-speedtest.vercel.app](https://github.com
 | **🎨 Glassmorphic Dashboard** | Responsive dark/light theme options, customized indigo/cyan brand gradients, and micro-interactions. | Fluid animations powered by `framer-motion` and a customized SVG real-time Speed Gauge. |
 | **📊 Live Performance Charts** | Dynamic, real-time tracking graphs charting throughput changes throughout the diagnostics phase. | Powered by `recharts` for responsive, animated, and lightweight canvas rendering. |
 | **🎮 Intelligent Use-Case Grading** | Real-world rating of network quality for specific tasks:<br>• **Online Gaming:** Latency & jitter sensitivity analysis<br>• **Video Calling:** Buffer-free Zoom/Teams assessment<br>• **Browsing Quality:** Social media & script load responsiveness<br>• **4K UHD Streaming:** High-bandwidth connection rating | Dynamic scoring engine translating raw metrics into descriptive performance grades. |
-| **🔒 Privacy-First Device Info** | Extracts and displays verified OS, browser engine, and ISP details. | Zero trackers or intrusive client-side hardware scraping; utilizes verified `ua-parser-js` matching. |
 | **📸 Custom PNG Export** | Instantly generates a clean, shareable scorecard card containing final test metrics. | Client-side export using `html-to-image` for high-quality PNG rendering and immediate downloads. |
 | **🎛️ Multi-Unit Options** | Single-tap controls to toggle metrics between **Bits (Mbps)** and **Bytes (MB/s)**. | Contextual conversion logic built directly into the gauge and metric cards. |
 
@@ -62,7 +60,6 @@ Run your speed test instantly: **[flynk-speedtest.vercel.app](https://github.com
 - **Animations:** [Framer Motion](https://motion.dev/)
 - **Charts:** [Recharts](https://recharts.org/)
 - **Icons:** [Lucide React](https://lucide.dev/)
-- **Analytics:** [UA-Parser-JS](https://github.com/faisalman/ua-parser-js)
 
 ---
 
