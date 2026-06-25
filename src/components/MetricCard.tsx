@@ -53,7 +53,7 @@ export function MetricCard({
           <span className="text-3xl font-extrabold tabular-nums tracking-tight" style={{ color: "var(--text-primary)" }}>
             {animatedValue.toFixed(decimals)}
           </span>
-          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>{unit}</span>
+          <span className="text-xs font-semibold tracking-wider" style={{ color: "var(--text-secondary)" }}>{unit}</span>
         </div>
 
         <p className="text-xs font-normal leading-relaxed" style={{ color: "var(--text-muted)" }}>{description}</p>

@@ -69,8 +69,8 @@ export function LiveChart({ history }: LiveChartProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h3 className="font-bold uppercase tracking-wider text-xs mb-6" style={{ color: "var(--text-secondary)" }}>
-        Speed Over Time (Mbps)
+      <h3 className="font-bold tracking-wider text-xs mb-6" style={{ color: "var(--text-secondary)" }}>
+        SPEED OVER TIME (Mbps)
       </h3>
       <div ref={containerRef} className="h-64 w-full">
         {visible ? (
@@ -115,7 +115,7 @@ export function LiveChart({ history }: LiveChartProps) {
                   color: isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.6)",
                   fontSize: 11,
                   fontWeight: "600",
-                  textTransform: "uppercase",
+                  textTransform: "capitalize",
                   letterSpacing: "0.08em",
                 }}
               />

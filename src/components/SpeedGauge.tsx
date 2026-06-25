@@ -535,7 +535,7 @@ export function SpeedGauge({
           </span>
         </div>
 
-        <span className="font-bold uppercase tracking-[0.2em] text-[10px] mt-0.5" style={{ color: "var(--text-secondary)" }}>
+        <span className="font-bold tracking-[0.2em] text-[10px] mt-0.5" style={{ color: "var(--text-secondary)" }}>
           {phase === "ping" ? "" : (unit === "byte" ? "MB/s" : "Mbps")}
         </span>
       </div>
